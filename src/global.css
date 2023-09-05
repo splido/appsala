@@ -641,10 +641,10 @@ footer{
     overflow-y: scroll;
   }
 
-  .comment-popup::-webkit-scrollbar{
+  .comment-popup::-webkit-scrollbar, .rating-popup::-webkit-scrollbar,.status-popup::-webkit-scrollbar,.login-pop::-webkit-scrollbar{
     display: none;
   }
-  .comments-section::-webkit-scrollbar{
+  .comments-section::-webkit-scrollbar, .rating-popup::-webkit-scrollbar,.status-popup::-webkit-scrollbar,.login-pop::-webkit-scrollbar{
     display: none;
   }
     .rating-popup,.status-popup{

@@ -11,7 +11,7 @@ function RatingPopup({info,setRatingPopup}) {
   const currentRatings = useSelector((state) => state.user?.products?.data?.following_app?.find((app)=> app.obj_id._id === info.obj_id._id).subscription?.user_ratings[0].rating); 
   console.log('currentRatings',currentRatings)
   const [selectedRatings, setSelectedRatings] = useState({
-    Usability: info.subscription.user_ratings[0].rating.Usability,
+    Usability: info?.subscription?.user_ratings[0]?.rating?.Usability,
     Performance: info.subscription.user_ratings[0].rating.Performance,
     Features: info.subscription.user_ratings[0].rating.Features,
     Company: info.subscription.user_ratings[0].rating.Company,
