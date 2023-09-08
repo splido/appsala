@@ -1,7 +1,6 @@
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import Addcompany from "./components/Addcompany";
-import Login from "./components/Login";
 import Home from "./pages/Home";
 import Product from "./pages/Product";
 import ProductList from "./pages/ProductList";
@@ -48,7 +47,7 @@ function App() {
     <Routes>
     <Route exact path="/" element={<Home products={products}/>} />
     <Route path="/category/:slug" element={<ProductList/>} />
-    <Route path="/login" element={<Login/>} />
+    {/* <Route path="/login" element={<Login/>} /> */}
     <Route path="/profile/:id" element={<PrivateRoute/>} >
     
     <Route path="/profile/:id" element={<Profile/>} />
@@ -58,7 +57,7 @@ function App() {
     </Route>
     <Route path="/:slug" element={<Product products={products}/>} />
     </Routes>
-    <Footer/>  
+    {/* <Footer/>   */}
     </Router>
   
   </>

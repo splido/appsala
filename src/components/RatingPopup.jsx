@@ -3,6 +3,7 @@ import { updateUserData } from "../Reducers/userReducer";
 import { useDispatch,useSelector } from "react-redux";
 import StarRating from './StarRating';
 function RatingPopup({info,setRatingPopup}) {
+  
   const applicationId = info.obj_id._id
   const authToken = localStorage.getItem('access_token')
   console.log(info)

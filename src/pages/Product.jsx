@@ -2,23 +2,103 @@ import monday from '../assets/img/monday.png'
 import dribbble from '../assets/img/dribbble.png'
 import figma from '../assets/img/Group 96.png'
 import behance from '../assets/img/behance.png'
-// import evernote from '../assets/img/Group.png'
+import { LiaCommentSolid } from 'react-icons/lia'
+import { FaStar } from 'react-icons/fa'
+import StarRating from '../components/StarRating'
 import product from '../assets/img/product-image.png'
 import Button from '../components/Button'
+import LoginPopup from '../components/LoginPopup'
 import { FaBookmark, FaGlobe } from 'react-icons/fa';
 import { useParams } from 'react-router'
 import SingleProduct from '../components/SingleProduct'
 import { useEffect, useState } from "react"
 import SimilarList from '../components/SimilarList'
 import Spinner from '../components/Spinner'
-function Product({products}) {
+import { useSelector } from 'react-redux';
+import CommentPopup from '../components/CommentPopup'
+import RatingPopup from '../components/RatingPopup'
+import ReactionComponent from '../components/ReactionComponent'
+import { selectUser } from '../Reducers/userReducer'
+function Product() {
+    
     const{ slug } = useParams()
     var input_string = slug
     var output_string = input_string.replace(/-/g, " ")
-
     const [singleProduct, setSingleProduct] = useState([])
     const [loading, setLoading] = useState(true);
+    const [showOverlay, setShowOverlay] = useState(false);
+    const auth = useSelector((state) => state.auth)
     const [similar, setSimilar] = useState([])
+    const [isDisabled, setIsDisabled] = useState(true)
+    const [loginPopupOpen, setLoginPopupOpen] = useState(false);
+    const [commentPopupOpen, setCommentPopupOpen] = useState(false);
+    const [ratingPopupOpen, setRatingPopupOpen] = useState(false);
+    const user = useSelector(selectUser)
+    const [followingAppRating, setFollowingAppRating] = useState([])
+    const [isFollowing, setIsFollowing] = useState(false)
+    const [followingAppComments, setFollowingAppComments] = useState([])
+    const [followingAppCommentList, setFollowingAppCommentList] = useState([])
+    const [currentStatus, setCurrentStatus] = useState('')
+    function StarRatings({ average }) {
+      const renderStars = () => {
+        const stars = [];
+    
+        if(average === 0){
+          for (let i = 0; i < 5; i++) {
+            stars.push(<FaStar key="empty" style={{ color:"#D9D9D9" }} />);
+          }
+        }else{
+        const fullStars = Math.floor(average);
+        const remainingStar = average - fullStars;
+        const remainingStarColor = " #D9D9D9";
+    
+    
+        for (let i = 0; i < fullStars; i++) {
+          stars.push(<FaStar key={`full_${i}`} style={{ color: '#F11A7B' }} />);
+        }
+    
+        if (remainingStar >= 0.5) {
+          stars.push(<FaStar key="half" style={{ color: '#F11A7B' }} />);
+          stars.push(<FaStar key="empty" style={{ color: remainingStarColor }} />);
+        } else if (remainingStar > 0) {
+          stars.push(<FaStar key="empty" style={{ color: remainingStarColor }} />);
+        }
+      }
+        return stars;
+      };
+    
+      return <div>{renderStars()}</div>;
+    }
+
+    const handlePopup = () => {
+      if(!auth.isAuthenticated){
+          setShowOverlay(true)
+          setLoginPopupOpen(true)
+      }else{
+        setRatingPopupOpen(false)
+          setShowOverlay(true)
+          setLoginPopupOpen(false)
+          setCommentPopupOpen(true)
+      }
+    }
+    const handleLoginPopup = () => {
+      if(!auth.isAuthenticated){
+          setShowOverlay(true)
+          setLoginPopupOpen(true)
+      }
+    }
+    const handleRatingPopup = () => {
+      if(!auth.isAuthenticated){
+          setShowOverlay(true)
+          setLoginPopupOpen(true)
+      }else{
+          setShowOverlay(true)
+          setLoginPopupOpen(false)
+          setCommentPopupOpen(false)
+          setRatingPopupOpen(true)
+      }
+    }
+
      useEffect(()=>{
       const apiUrl = 'https://appsalabackend-p20y.onrender.com/products'
       const fetchData = async() =>{
@@ -26,75 +106,157 @@ function Product({products}) {
         const data = await response.json()
         const foundProducts = data.data.filter((product) => product.slug === slug);
         setSingleProduct(foundProducts)
+        console.log(foundProducts)
+        if (auth.isAuthenticated) {
+          const app = user.products.data.following_app
+          const following_apps = app.map((app)=>app.obj_id._id)
+          following_apps.forEach((appId) => {
+              if (appId === singleProduct[0]?._id) {
+              setIsFollowing(true)
+              setFollowingAppRating(app.find((app)=> app.obj_id._id === singleProduct[0]?._id).subscription?.user_ratings[0]?.rating)
+              setFollowingAppCommentList(app.find((app)=> app.obj_id._id === singleProduct[0]?._id).subscription.comment)
+              setFollowingAppComments(app.find((app)=> app.obj_id._id === singleProduct[0]?._id))
+              setCurrentStatus(app.find((app)=> app?.obj_id?._id === singleProduct[0]?._id)?.status)
+              } else {
+                console.log('not following');
+              }
+            });
+          }
         setSimilar(data.data.filter((product) => product?.Category === singleProduct[0]?.Category))
-        // setSimilar(similar)
-        console.log(similar)
-        // similar ? setLoading(false) : setLoading(true);
         setLoading(false)
       }
+      console.log(singleProduct[0]?._id)
+ 
         fetchData()
       },[slug])
 
+      const handleOverlayDoubleClick = () => {
+        setShowOverlay(false);
+      };
+    const handleSave = async() =>{
+      if(!auth.isAuthenticated){
+        setShowOverlay(true)
+        setLoginPopupOpen(true)
+    }else{ 
+      const authToken = localStorage.getItem('access_token')
+      const api = `https://appsalabackend-p20y.onrender.com/saved_product/${singleProduct[0]?._id}`
+      const requestOptions = {
+        method: 'POST',
+        headers: {
+          "Authorization": `Bearer ${authToken}`,
+          "Content-Type": "application/json",
+        },
+        body: '',
+      };
+      console.log(requestOptions)
+      try {
+        const response = await fetch(api, requestOptions);
+        const data = await response.json();
+        // setSelectedRatings(currentRatings)
+        console.log('Response data:', data);
+        // Handle the response data here
+      } catch (error) {
+        console.error('Error:', error);
+        // Handle errors here
+      }
+    }
+    }
     //   setSimilar(similar[0])
+    if(followingAppRating){
+        
+      var rating = followingAppRating
+      
+      var ratingValues = Object.values(rating);
+      var totalValues = ratingValues.length;
+      
+      var sum = ratingValues.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+      var average = sum / totalValues;
+      
+    }else{
+      var average = 0
+    }
   return (
     <>
+       {showOverlay && loginPopupOpen && (
+        <div className="overlay" onDoubleClick={handleOverlayDoubleClick}>
+          <LoginPopup/>
+        </div>
+  )}
+   {showOverlay && commentPopupOpen && (
+        <div className="overlay" onDoubleClick={handleOverlayDoubleClick}>
+          <CommentPopup info={followingAppComments}/>
+        </div>
+  )}
+    {showOverlay && ratingPopupOpen && (
+        <div className="overlay" onDoubleClick={handleOverlayDoubleClick}>
+          <RatingPopup info={followingAppComments}/>
+        </div>
+  )}
+
     <div>
-      <header className="product-page-header container">
-        <p className="page-path">Home / {output_string}</p>
-        <div className="product-info-grid">
-        <img src={singleProduct[0]?.logo} alt=""/>
-    <div className="product-text">
-    <p className="product-info-heading">{singleProduct[0]?.name}</p>
-    <p style={{color: "#454545"}}>{singleProduct[0]?.review}</p>
-    <p>749  Follows</p>
-    </div>
-            <div className="buttons">
-                <Button type= "btn-light"> <FaBookmark style={{margin: "10px"}}/> Save</Button>
-                <Button type= "btn-dark"> <FaGlobe style={{margin: "10px"}}/>Visit Web</Button>
+    <p className="page-path">Home / {output_string}</p>
+      <header className="product-page-header container"> 
+        <div className='product-info-grid'>
+          <div className='product-information'>
+          <img src={singleProduct[0]?.logo} alt=""/>
+          <div>
+          <h3>{singleProduct[0]?.name}</h3>
+          <StarRatings average={singleProduct[0]?.averageRating}/> 
+           <p>749  Follows</p>
+          </div>
+          </div>
+        
+    <div className='product-information-2'>
+    <p className='review'>{singleProduct[0]?.review}</p>
+    <div className='comment-rating'>
+            <div className='my-rating'  onClick={handleRatingPopup}>
+                <p>My Rating </p>
+                {
+                isFollowing ? <StarRatings average={average}/> : <StarRating/>
+                }
             </div>
+   
+        <div className='my-comments'  onClick={handlePopup}>
+        <LiaCommentSolid/>
+        {
+            isFollowing ? 
+            <p>comment <span style={{color: '#00A82D'}}>({followingAppCommentList.length})</span></p>
+             : <p className='no-comment' onClick={handlePopup}>Comment</p>
+        }
+        </div>
+        </div>
+    <div>
+                <button type= "btn-light" className='button' onClick={handleSave}> <FaBookmark className='icon'/> Save</button>
+                <button type= "btn-dark" className='button'> <FaGlobe className='icon'/> Visit Web</button>
+             </div>
+    </div>
+             
         </div>
         <div className="product-question">
             <p className="question">What is {singleProduct[0]?.name}?</p>
             <p style={{color: "#454545"}}>{singleProduct[0]?.shortDescription} </p>
         </div>
-        <div className="product-bar">
+        <div className="product-bar" onClick={handlePopup}>
             <p>
                 Do you wish to use {output_string}?
             </p>
-            <div className="comment-div">
-            <div className="reaction selected">
-                I am using it 👍
-            </div>
-            <div className="reaction">
-                Yes, I want to 🤩
-            </div>
-            <div className="reaction">
-               May be 🤔
-            </div>
-            <div className="reaction">
-              No, I don't 😐
-            </div>
-        </div>
+            {
+                    isFollowing ? <ReactionComponent currentStatus={currentStatus} product={product}/> : <ReactionComponent isDisabled={isDisabled}/>
+            }
         </div>
     </header>
+    <p className="highlighted">Productivity</p>
     <div className="image-section container">
-        <p className="highlighted">Productivity</p>
         <img src={product} alt=""/>
     </div>
 
     <div className="product-review-section container">
         <p className="bold">Review</p>
             
+{
+  singleProduct[0]?.review
+}
 
-TubeBuddy, an innovative browser extension designed to streamline and optimize YouTube content creation, has garnered immense popularity among content creators and marketers. With its array of time-saving features and data-driven functionalities, TubeBuddy has become an indispensable tool in the YouTube landscape. In this comprehensive review, we will explore the various aspects of TubeBuddy, including its Video SEO capabilities, in-depth analytics, time-saving bulk processing, competitor analysis, engagement tools, A/B testing, and customer support. By examining these features and their impact on content creation, we aim to shed light on how TubeBuddy has revolutionized YouTube channel management and success.
-
-<p>Video SEO Made Simple:</p>
-    
-
-<p>TubeBuddy's greatest strength lies in its Video SEO tools, which have transformed the way content creators optimize their videos for search and discovery. Upon installing the extension, users are greeted with a powerful keyword research feature that enables them to identify high-traffic and relevant keywords for their content. The intuitive keyword analysis also presents insights into the competitiveness of these keywords, allowing creators to choose the most strategic terms for their target audience.
-</p>
-<p>Moreover, TubeBuddy empowers users to optimize their video titles, tags, and descriptions directly within the YouTube upload interface. The real-time suggestions and tag explorer functionality make the process efficient and effective, ensuring that videos are easily discoverable by the intended audience. Additionally, the extension provides an invaluable tool to track and manage video rankings, offering content creators greater visibility into their videos' performance on YouTube's search engine.
-</p>
     </div>
 
 <div className="alternatives">
@@ -156,6 +318,9 @@ similar ? (
     <p className="bold">Conclusion</p>
     <p>The economy plan offered by GoDaddy.com provides essential services for most users, and is a great plan to start a website with. You will find it easy to access the basic package, as designed for everyone.The economy plan offered by GoDaddy.com provides essential services for most users, and is a great plan to start a website with. You will find it easy to access the basic package, as designed for everyone.</p>
 </div>
+<div className="grey-footer">
+
+        </div>
 </>
 
 

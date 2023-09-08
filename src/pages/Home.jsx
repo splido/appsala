@@ -1,75 +1,169 @@
-// import monday from '../assets/img/monday.png'
-// import dribbble from '../assets/img/dribbble.png'
-// import figma from '../assets/img/Group 96.png'
-// import behance from '../assets/img/behance.png'
-// import reviewIcon from '../assets/img/icon-1.svg'
-import laptop from '../assets/img/Laptop.png'
-import clibboard from '../assets/img/Clipboard.png'
-import mobile from '../assets/img/mobile.png'
-import laptop2 from '../assets/img/Rectangle.png'
-import frame from '../assets/img/Frame 97.png'
-import search from '../assets/img/search.svg'
+import performance from '../assets/img/performance.png'
+import dog from '../assets/img/dog.png'
+import ankr from '../assets/img/ankr.png'
+import notification from '../assets/img/notification1.png'
+import notepad from '../assets/img/notepad2.png'
+import pana from '../assets/img/pana.png'
+import board from '../assets/img/board.png'
+import woman from '../assets/img/woman.png'
+import girl from '../assets/img/girl.png'
+import man from '../assets/img/man.png'
+import battery from '../assets/img/battery.png'
+import mask from '../assets/img/mask.png'
+import footerBanner from '../assets/img/footer-banner.png'
+import hands from '../assets/img/hands.png'
 import ProductCard from '../components/ProductCard'
-import ReviewCard from '../components/ReviewCard'
+import { TiTick } from "react-icons/ti";
+import RegisterPopup from '../components/RegisterPopup'
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 function Home({products}) {
+  const user = useSelector((state) => state.auth.isAuthenticated);
+  const [registerPopup, setRegisterPopup] = useState(false);
+  const [showOverlay, setShowOverlay] = useState(false);
+
+  const handleRegisterPopup = () => {
+    if(user){
+      alert('You are already Registered')
+    }
+    setRegisterPopup(true);
+    setShowOverlay(true);
+  }
+
+const handleOverlayDoubleClick = () => {
+  setShowOverlay(false);
+};
   return (
     <div>
+      {showOverlay && registerPopup && (
+        <div className="overlay" onDoubleClick={handleOverlayDoubleClick}>
+          <RegisterPopup/>
+        </div>
+  )}
      <header className="header">
         <div className="header-inner">
 
-            <p className="large">Manage all your Web Applications in one place.</p>
+            <p className="large">Track all your Web Applications in one place.</p>
             <p className="header-para"> Compare, Rate and Review web applications. Keep track of Web Applications you use or planning to use.
                  Get alerts before your payment is processed. Save your time, money or both!</p>
-                 <div className="search">
-                    <form>
-                        <input type="text" id="search" placeholder="Search for Apps/Web Apps/Services"/>
-                      </form>
-                      </div>
-        
-                      <a href="/" className="btn btn-dark header-btn">Search<img src={search} alt=""/></a>
+                      <button href="/" className="button-light">Start Building a Website</button>
+            <p className="header-para" >A Random selection of Web Applications reviewed <span onClick={()=> handleRegisterPopup()}
+            style={{cursor: 'pointer'}}
+            >Join us.</span></p>
         </div>
             </header>
            
             <div className="container latest-reviews">
-            <h1 className="heading">Latest Reviews</h1>
-                <div className="reviews-section">
-                    <ProductCard products={products.data}/>
+                <div className='product-images'><ProductCard products={products.data}/></div>
 
-            </div>
-        <div className="features">
-            <h1 className="heading">Top Feature</h1>
-            <div className="feature-section">
-            <ReviewCard products={products.data}/>
-            </div>
-        </div>
-        <div className="market-place container">
-            <div className="market-heading">
-            <img src={laptop} alt=""/>
-            <h1>Web Application Market Place</h1>
-        </div>
-            <div className="comment">
-                <img src={clibboard} alt=""/>
-                <pre>  Not just reviews, you can track
-Applications and save money and time!
-                </pre>
-                <img src={mobile} alt=""/>
-            </div>
+                <h2 className="heading-h2">Appsala Reviews Over <span>1,000</span> Web Applications</h2>
+                <img src={performance} 
+                style={{height: '500px'}}
+                alt="" />
+                <h2 className="heading-h2">Appsala Reviews Over <span>1,000</span> Web Applications</h2>
+                <p className="header-para"
+                style={{width: '60%', textAlign: 'center', margin: 'auto'}}
+                > Compare, Rate and Review web applications. Keep track of Web Applications you use or planning to use.
+                 Get alerts before your payment is processed. Save your time, money or both!</p>
         </div>
 
-        <div className="reviews container">
-            <h1 className="heading">Web Application Reviews</h1>
-            <p>We provide a short review of the applications and also provide a rating and other details such as pricing, free trial, money back period etc so that you can take an immediate decision. You can also tag it to wishlist or not for me.
-                 This will save you valuable time next time as you don't have to keep reading the same reviews</p>
-            <img src={laptop2} alt=""/>
+        <div className="home-flex container">
+          <div>
+            <img src={dog} alt="" />
+            <div className="reviews-card">
+                <TiTick className='tick'/>
+              <p>
+              <b>Track :</b>Tracking the web application you use need not be tiresome.
+               Now you can track all the applications in one place.
+              </p>
+            </div>
+            <img src={ankr} alt="" />
+          </div>
+          <div>
+            <img src={notification} alt="" />
+            <div className="reviews-card">
+                <TiTick className='tick'/>
+              <p>
+              <b>Notify :</b>Getting unexpected credit card charges could be a thing of the past.
+               Get notification before due date so that you can decide to cancel a subscription if not needed.
+              </p>
+            </div>
+            <img src={woman} alt="" />
+          </div>
+          <div>
+            <img src={pana} alt="" />
+            <div className="reviews-card">
+                <TiTick className='tick'/>
+              <p>
+              <b>Review :</b>You might spend countless hours going through application reviews.
+               Now do your own reviews which you can share only with your team-mates.
+              </p>
+            </div>
+            <img src={board} alt="" />
+          </div>
+          <div>
+            <img src={notepad} alt="" />
+            <div className="reviews-card">
+                <TiTick className='tick'/>
+              <p>
+              <b>Notes :</b>There is a chance you need to look for certain features or do further review later. 
+              Keep note of everything by keeping private notes on an application. </p>
+            </div>
+            <img src={girl} alt="" />
+          </div>
         </div>
-        <div className="reviews container">
-            <h1 className="heading">Signup for More</h1>
-            <p>Once you sign up, you can keep track of the applications you use in the dashboard and also can get notification before payment. 
-                This will help you to decide wisely before your card is charged</p>
-            <img src={frame} alt=""/>
+
+        <div className="bar">
+          <h1>Can't Find a Review You are Looking For?</h1>
+          <img src={man} alt="" />
+          <div>
+            <span>
+            <p>
+            Our team is willing and ready to do it in a short notice. Just submit the website URL,
+             and we will be upto the task in no time!
+            </p>
+            <button className="button-light" 
+            onClick={()=> handleRegisterPopup()}
+            style={{height: '30px', width: '120px', padding: '5px'}}
+            >Register Now</button>
+            </span>
+          </div>
         </div>
+        <h2 className="heading-h2" style={{textAlign: 'center', marginTop: '-7rem'}}>Appsala Reviews Over <span style={{color: '#C6EFBB'}}>1,000</span> Web Applications</h2>
+      <div className="blog-list">
+        <div>
+          <img src={battery} alt="" />
+          <h2>Reveal Blocks with Animations</h2>
+          <p>Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint.
+            Amet minim mollit non deserunt </p>
         </div>
+        <div>
+          <img src={hands} alt="" />
+          <h2>Reveal Blocks with Animations</h2>
+          <p>Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint.
+            Amet minim mollit non deserunt </p>
+        </div>
+        <div>
+          <img src={mask} alt="" />
+          <h2>Reveal Blocks with Animations</h2>
+          <p>Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint.
+            Amet minim mollit non deserunt </p>
+        </div>
+      </div>
+      <div className="home-footer">
+        <h1>Get Started With <span>Appsala</span></h1>
+        <button className="button-light" 
+        onClick={()=> handleRegisterPopup()}
+            style={{height: '30px', width: '150px', padding: '5px'}}
+            >Register for free now</button>
+            <div>
+            <div><TiTick className='tick'/><p>Start Building a Website</p></div>
+            <div><TiTick className='tick'/><p>Start Building a Website</p></div>
+            <div><TiTick className='tick' /><p>Start Building a Website</p></div>
+            </div>
+          <img src={footerBanner} alt="" />
+      </div>
     </div>
   )
 }

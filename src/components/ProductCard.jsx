@@ -2,7 +2,7 @@ import ProductCardItem from "./ProductCardItem"
 
 function ProductCard({products}) {
   // console.log(products.data)
-  const product_list = products?.slice(0,4)
+  const product_list = products?.slice(0,6)
   return (
 
     <>

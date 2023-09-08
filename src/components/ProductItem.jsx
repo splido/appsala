@@ -14,6 +14,8 @@ import CommentPopup from './CommentPopup'
 import RatingPopup from './RatingPopup'
 
 function ProductItem({product}) {
+  console.log(product)
+    const [isDisabled, setIsDisabled] = useState(true)
     const [loginPopupOpen, setLoginPopupOpen] = useState(false);
     const [commentPopupOpen, setCommentPopupOpen] = useState(false);
     const [ratingPopupOpen, setRatingPopupOpen] = useState(false);
@@ -27,8 +29,12 @@ function ProductItem({product}) {
     const [followingAppComments, setFollowingAppComments] = useState([])
     const [followingAppCommentList, setFollowingAppCommentList] = useState([])
     const [currentStatus, setCurrentStatus] = useState('')
-    console.log(followingAppComments)
-    
+    // console.log(followingAppComments)
+    var shortDescription = product.shortDescription
+    const words = shortDescription.split(/\s+/);
+    // Get the first 20 words
+    const first20Words = words.slice(0, 20).join(" ");
+    var shortDescription = first20Words + '...'
     function StarRatings({ average }) {
         const renderStars = () => {
           const stars = [];
@@ -70,6 +76,12 @@ function ProductItem({product}) {
             setCommentPopupOpen(true)
         }
       }
+      const handleLoginPopup = () => {
+        if(!auth.isAuthenticated){
+            setShowOverlay(true)
+            setLoginPopupOpen(true)
+        }
+      }
       const handleRatingPopup = () => {
         if(!auth.isAuthenticated){
             setShowOverlay(true)
@@ -89,7 +101,7 @@ function ProductItem({product}) {
             const following_apps = user.products.data.following_app.map((app)=>app.obj_id._id)
             following_apps.forEach((appId) => {
                 if (appId === product._id) {
-                  console.log('following', appId);
+                  // console.log('following', appId);
                   setIsFollowing(true)
                  setFollowingAppRating(user.products.data.following_app.find((app)=> app.obj_id._id === product._id).subscription?.user_ratings[0]?.rating)
                  setFollowingAppCommentList(user.products.data.following_app.find((app)=> app.obj_id._id === product._id).subscription.comment)
@@ -117,11 +129,7 @@ function ProductItem({product}) {
       }
   return (
     <>
-       {showOverlay && loginPopupOpen && (
-        <div className="overlay" onDoubleClick={handleOverlayDoubleClick}>
-          <LoginPopup/>
-        </div>
-  )}
+    
    {showOverlay && commentPopupOpen && (
         <div className="overlay" onDoubleClick={handleOverlayDoubleClick}>
           <CommentPopup info={followingAppComments}/>
@@ -141,9 +149,9 @@ function ProductItem({product}) {
                 <div className="details">
 
 
-<Link to={`/${product.slug}`}> {product.name}</Link>
+<Link to={`/${product.slug}`} className='product-link'> {product.name}</Link>
                     <div className="stars">
-                        <StarRating/>
+                        <StarRating />
                     </div>
                     <div className="ratings">
                         <p>{product.averageRating}<span>(149 Follows)</span></p>
@@ -153,7 +161,7 @@ function ProductItem({product}) {
             <div>
             <p style={{ fontSize: "20px" ,color: "#757575"}}>
                 {
-                    product.review
+                    shortDescription
                 }
             </p>
             <div className='comment-rating'>
@@ -168,7 +176,9 @@ function ProductItem({product}) {
         <div className='my-comments'>
         <LiaCommentSolid onClick={handlePopup}/>
         {
-            isFollowing ? <p>Comment ({followingAppCommentList.length}) </p> : <p className='no-comment' onClick={handlePopup}>Comment</p>
+            isFollowing ? 
+            <p>comment <span style={{color: '#00A82D'}}>({followingAppCommentList.length})</span></p>
+          : <p className='no-comment' onClick={handlePopup}>Comment</p>
         }
         {/* <p>comment {followingAppComments.length} </p> */}
         </div>
@@ -177,12 +187,12 @@ function ProductItem({product}) {
            
         </div>
        
-            <div className="product-bar">
+            <div className="product-bar" onClick={handlePopup}>
                 <p>
                     Do you wish to use {product.name}?
                 </p>
                 {
-                    isFollowing ? <ReactionComponent currentStatus={currentStatus}/> : <ReactionComponent/>
+                    isFollowing ? <ReactionComponent currentStatus={currentStatus} product={product}/> : <ReactionComponent isDisabled={isDisabled}/>
                 }
                 {/* // <ReactionComponent currentStatus={currentStatus}/> */}
             </div>

@@ -72,7 +72,7 @@ function ProfilePage() {
       <h1>
       My Profile
       </h1>
-      <div class="sep-line"></div>
+      <div className="sep-line"></div>
       <form action="">
         <div>
           <label htmlFor="">Name</label>
@@ -92,7 +92,7 @@ function ProfilePage() {
         </div>
         <button className="profile-button-light" onClick={handleUpdate}>Update</button>
       </form>
-      <div class="sep-line"></div>
+      <div className="sep-line"></div>
       <div className="update-password">
         <div className="reset-pass">
         <h3>Update Password</h3>

@@ -19,13 +19,14 @@ import { useNavigate } from 'react-router-dom';
 
 function Profile() {
   const currentUser = useSelector((state) => state.user);
+  const [sortFilter, setSortFilter] = useState(false);
   const loading = useSelector((state) => state.user.loading);
-  const [userApps, setUserApps] = useState([])
+  const [userApps, setUserApps] = useState(currentUser.products?.data?.following_app)
   const [activeComponent, setActiveComponent] = useState('dashboard');
   const [sortOrder, setSortOrder] = useState('asc');
   const [showOverlay, setShowOverlay] = useState(false);
   const [sortList, showSortList] = useState(false);
-  const [user, setUser] = useState([])
+  const [user, setUser] = useState(currentUser.products?.data)
   const [searchVal, setSearchVal] = useState('')
   const [savedApps, setSavedApps] = useState([])
   const [selectedFilter, setSelectedFilter] = useState('All');
@@ -38,8 +39,10 @@ function Profile() {
   const navigate = useNavigate()
   
   const handleLogout = () => {
+    window.location.reload();
     dispatch(logoutUser());
     navigate('/');
+ 
   };
 
 
@@ -63,7 +66,7 @@ function Profile() {
   };
 
   const handleSortToggle = (type) => {
-    // console.log(userApps)
+    // console.log(userApps
     setShowOverlay(false)
     // const newSortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
     // setSortOrder(newSortOrder);
@@ -106,24 +109,12 @@ function Profile() {
     });
     setUserApps(sortedItems);
   }
-
+  setSortFilter(true)
 }
-  // const dispatch = useDispatch();
- 
-
-
   useEffect(() => {
     dispatch(fetchUser(id));
-    // AllUsers();
-    // console.log(userApps)
+    // handleSortToggle('Latest')
   }, [user,dispatch, userApps,id]);
-
-  // useEffect(() => {
-  //   // Set userApps when currentUser.products.data.following_app is available
-  //   if (currentUser.products?.data?.following_app) {
-  //     setUserApps(currentUser.products.data.following_app);
-  //   }
-  // }, [currentUser.products?.data?.following_app]);
   
 const AllUsers = () =>{
   setUserApps(currentUser.products?.data?.following_app)
@@ -158,11 +149,7 @@ const filterComments = () =>{
 }
 
 const filterSaved = () =>{
-  // const filterSaved = user?.saved
-  // console.log(savedApps)
   setUserApps(user?.saved)
-  // console.log(userApps)
-  // console.log(filterSaved)
   setSelectedFilter('Saved')
  }
  
@@ -207,21 +194,51 @@ const onHandleChange =(e)=>{
   setUserApps(filterSearch)
  }
 
+ useEffect(() => {
+  
+  if(sortText== 'Latest' || sortText== 'Oldest' || sortText== 'Highest' || sortText== 'Lowest'){
+    handleSortToggle(sortText)
+    // setSortFilter(false)  
+  // You can also set other state variables here based on the fetched data
+}else if (!loading && currentUser.products) {
+  setUserApps(currentUser.products?.data?.following_app);
+  setSortText('Sort By')
+    // You can also set other state variables here based on the fetched data
+}
+}, [loading, currentUser.products]);
+
+// useEffect(() => {
+//     if(sortText== 'Latest' || sortText== 'Oldest' || sortText== 'Highest' || sortText== 'Lowest'){
+//       handleSortToggle(sortText)
+//       // setSortFilter(false)  
+//     // You can also set other state variables here based on the fetched data
+//   }
+// }, [sortText,handleSortToggle]);
+
   return (
     <div className="profile">
       <div className="sidebar">
         <Link to='/'> 
-        <img src={logo} alt="" />
+        <img src={logo} style={{ height:'50px'}}
+        alt="" />
         </Link>
+        <div   className={`icon ${activeComponent === 'dashboard' ? 'filter-selected' : ''}`}>
+
         <LuLayoutDashboard  
-        className={`icon ${activeComponent === 'dashboard' ? 'selectedFilter' : ''}`}
-        onClick={() => handleSidebarClick('dashboard')} />
-        <HiOutlineUserCircle  
-         className={`icon ${activeComponent === 'profilepage' ? 'selectedFilter' : ''}`}
-        onClick={() => handleSidebarClick('profilepage')} />
+      
+        onClick={() => handleSidebarClick('dashboard')} /> <p>Dashboard</p>
+        </div>
+        <div  className={`icon ${activeComponent === 'profilepage' ? 'filter-selected' : ''}`}>
+
+        <HiOutlineUserCircle
+        onClick={() => handleSidebarClick('profilepage')} /> <p>Profile</p>
+        </div>
+        <div  className={`icon ${activeComponent === 'settings' ? 'filter-selected' : ''}`}>
         <RiLogoutBoxRLine  
-           className={`icon ${activeComponent === 'settings' ? 'selectedFilter' : ''}`}
         onClick={() => handleLogout()} />
+        <p>Logout</p>
+        </div>
+      
       </div>
 {
  activeComponent === 'dashboard' && 
@@ -260,9 +277,9 @@ const onHandleChange =(e)=>{
           </div>
           <div
           className={`filter ${selectedFilter === 'Ratings' ? 'selectedFilter' : ''}`}
-          onClick={() => handleFilterClick('Ratings')}> <LiaStarSolid/> My ratings</div>
+          onClick={() => handleFilterClick('Ratings')}>⭐ My ratings</div>
           <div className={`filter ${selectedFilter === 'Comments' ? 'selectedFilter' : ''}`}
-            onClick={() => handleFilterClick('Comments')}> <LiaCommentSolid/> My comments</div>
+            onClick={() => handleFilterClick('Comments')}>💬 My comments</div>
           <div className={`filter ${selectedFilter === 'Saved' ? 'selectedFilter' : ''}`}
             onClick={() => handleFilterClick('Saved')}> <BsBookmark/> Saved</div>
         </div>
@@ -285,12 +302,7 @@ const onHandleChange =(e)=>{
           )
           
         }
-       {/* {loading ? (
-        // Display a spinner while loading
-        <div className="spinner"/>
-      ) : (
-        <ProfileProductsList userApps={userApps} id={id}/>
-      )} */}
+    
 {
    <ProfileProductsList userApps={userApps} id={id}/>
 }

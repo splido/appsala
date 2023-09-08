@@ -11,7 +11,7 @@ function ProfileProductsList({userApps, id}) {
   return (
  <>
 { userApps?.map((info)=>(
-        <ProfileProductItem info={info} id={id}/>
+        <ProfileProductItem info={info} id={info._id}/>
        ))}
 
   {/* {loading ? (

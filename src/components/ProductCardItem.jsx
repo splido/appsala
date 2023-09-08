@@ -3,11 +3,17 @@ import { FaStar } from 'react-icons/fa'
 
 function ProductCardItem({product}) {
   return (
-    <div className="reviews-card">
+    // <div className="reviews-card">
     <div>
-        <img src={product.logo} alt="" style={{height:'30px'}}/>
+        <img src={product.logo} alt="" style={{height:'50px'}}/>
     </div>
-    <div className="details">
+  
+  )
+}
+
+export default ProductCardItem
+
+  /* <div className="details">
         <p style={{fontSize: '15px'}}>{product.name}</p>
         <div className="stars">
           <FaStar style={{color: "yellow"}}/>
@@ -19,9 +25,5 @@ function ProductCardItem({product}) {
         <div className="ratings">
             <p>{product.averageRating} <span>(149 Follows)</span></p>
         </div>
-    </div>
-    </div>
-  )
-}
-
-export default ProductCardItem
+    </div> */
+    // </div>

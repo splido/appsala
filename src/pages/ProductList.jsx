@@ -2,15 +2,13 @@ import Button from '../components/Button'
 import Products from '../components/Products'
 import { useState, useEffect } from "react"
 import { useParams } from 'react-router'
-
 function ProductList() {
-
     const{ slug } = useParams()
     const [category, setCategory] = useState([])
 
     const [population, setPopulation]= useState(5)
     const handleClick = () => setPopulation(population+5)
-    // const product_list = products?.data?.slice(0,population)
+    const product_list = category?.data?.slice(0,population)
 
 
     useEffect(() => {
@@ -37,11 +35,11 @@ function ProductList() {
     // console.log(category.data)
         return (
         <div>
+           <p className="page-path">Home / {output_string}</p>
             <header className="product-header">
             <div className="product-header-inner">
-            <p className="page-path">Home / {output_string}</p>
             <h1 className="product-heading">
-                The best {heading} <span>Apps</span> in
+                The Best {heading} Apps in <span>2023</span>
             </h1>
         </div>
         </header>
@@ -51,10 +49,14 @@ function ProductList() {
                 <p>Note-writing apps are digital tools designed to help users capture, organize, and manage their notes efficiently. These apps have become increasingly popular due to their convenience and versatility in various aspects of life, 
             both personal and professional. Here's a brief overview of note-writing apps:</p>
             </div>  
-                    <Products products = {category.data}/>
+                    <Products products = {product_list}/>
                     
-            <button onClick={handleClick} type="btn-border">Show More</button>
+            <button onClick={handleClick} type="btn-border" className='button' style={{width:'auto'}}>Show More</button>
           
+        </div>
+
+        <div className="grey-footer">
+
         </div>
         </div>
       )

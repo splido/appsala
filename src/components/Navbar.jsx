@@ -1,4 +1,4 @@
-import logo from '../assets/img/logo.svg'
+import logo from '../assets/img/new-logo.png'
 import seachIcon from '../assets/img/search.svg'
 import Button from './Button'
 import Menu from './Menu';
@@ -11,6 +11,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { logoutUser } from '../Reducers/AuthReducer';
 
 function Navbar({products}) {
+  const userId = localStorage.getItem('userId')
   const user = useSelector((state) => state.auth.isAuthenticated);
    const [categories, setCategories] = useState([])
   const dispatch = useDispatch();
@@ -110,9 +111,12 @@ if (isProfileRoute) {
         </div>
   )}
 
-        <nav>
-        <div className="container">
+        <nav >
+        
             <div className="navbar">
+              <div>
+
+              
             <div className="logo">
             <Link to={"/"} >
                 <img src={logo} alt=""/>
@@ -137,6 +141,8 @@ if (isProfileRoute) {
                    
                 </ul>
             </div>
+            </div>
+            <div>
             <div className="search">
                 <form>
                     <input onChange={onHandleChange} onClick={onHandleClick} onMouseEnter={handleMouseEnter} value={searchVal} type="text" id="search"  placeholder="Search" autoComplete="off"/>
@@ -144,17 +150,21 @@ if (isProfileRoute) {
                        <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <SeachList filteredData={dataFilter}/></div>)}
                   </form>
-                  <div className="seach-icon">
-                    <img src={seachIcon} alt=""/>
-                  </div>
             </div>
             <div >
             <div className="nav-buttons">
-           <button type ='btn-light' onClick={()=> handleLoginPopup() }>{
+           <button type ='btn-light' className='button' onClick={()=> handleLoginPopup() }>{
             user ? 'Logout' : 'Login'
 }</button>
           {
-                user ? <></>: <button type ='btn-light' onClick={()=> handleRegisterPopup() }>Register</button>
+                user ? <><button type ='btn-light' className='button-light'>
+                  <Link to = {`/profile/${userId}`} 
+                  className='link'
+                  style={{ textDecoration: 'none'}}
+                  >
+                  Dashboard
+                  </Link>
+                  </button></>: <button type ='btn-light' className='button-light' onClick={()=> handleRegisterPopup() }>Register</button>
           }
          
     
