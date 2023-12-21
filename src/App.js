@@ -5,38 +5,30 @@ import Home from "./pages/Home";
 import Product from "./pages/Product";
 import ProductList from "./pages/ProductList";
 import { BrowserRouter as Router, Route,Routes } from 'react-router-dom';
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import PrivateRoute from "./pages/PrivateRoute";
 import Profile from "./pages/Profile";
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchUser } from './Reducers/userReducer'
+import { fetchProducts, selectProducts } from './Reducers/ProductReducer'
 
 function App() {
-  const [products, setProducts] = useState([])
-  // const [isAuthenticated, setIsAuthenticated]=useState(false)
-   
-//   const [credentials, setCredentials] = useState({
-//     email: '',
-//     password: '',
-// });
-
+  const products = useSelector(selectProducts);
+  const id = localStorage.getItem('userId')
+  const dispatch = useDispatch();
   useEffect(()=>{
-    fetchData()
-  
-  },[])
+    // fetchData()
+    dispatch(fetchUser(id));
+    dispatch(fetchProducts());
+  }, [dispatch,id]);
 
-  const apiUrl = 'https://appsalabackend-p20y.onrender.com/products'
-  
-
-  const fetchData = async() =>{
-    const response = await fetch(apiUrl)
-    const data = await response.json()
-    setProducts(data)
+  // const apiUrl = 'https://appsalabackend-p20y.onrender.com/products'
+  // const fetchData = async() =>{
+  //   const response = await fetch(apiUrl)
+  //   const data = await response.json()
+  //   setProducts(data)
    
-  }
-
- 
-
-
-
+  // }
 
 
   return (
@@ -47,7 +39,6 @@ function App() {
     <Routes>
     <Route exact path="/" element={<Home products={products}/>} />
     <Route path="/category/:slug" element={<ProductList/>} />
-    {/* <Route path="/login" element={<Login/>} /> */}
     <Route path="/profile/:id" element={<PrivateRoute/>} >
     
     <Route path="/profile/:id" element={<Profile/>} />
@@ -57,7 +48,7 @@ function App() {
     </Route>
     <Route path="/:slug" element={<Product products={products}/>} />
     </Routes>
-    {/* <Footer/>   */}
+    <Footer/>  
     </Router>
   
   </>

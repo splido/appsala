@@ -1,42 +1,63 @@
 import { FaStar } from 'react-icons/fa'
-import monday from '../assets/img/monday.png'
 import {MdOutlineCategory} from 'react-icons/md'
 import { LiaCommentSolid } from 'react-icons/lia'
 import { FaArrowCircleRight } from 'react-icons/fa'
 import { useState,useEffect } from 'react'
 import RatingPopup from './RatingPopup'
+import StarRating from './StarRating'
 import StatusPopup from './StatusPopup'
 import CommentPopup from './CommentPopup'
-function ProfileProductItem({info, id}) {
+// import { useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux';
+
+function ProfileProductItem({info,savedApp}) {
+  const [saved, setSaved] = useState()
+  const currentUser = useSelector((state) => state?.user?.products?.data?.saved);
   const [selectedDropdownValue, setSelectedDropdownValue] = useState('');
-  console.log(info)
 const selector = (val)=>{
-  if (val.startsWith('I am')){
+  // console.log(val)
+  if (val?.startsWith('I am')){
   return 'option1'
-  }if (val.startsWith('Yes')){
+  }if (val?.startsWith('Yes')){
   return 'option2'}
-  if (val.startsWith('May')){
+  if (val?.startsWith('May')){
   return 'option3'}
-  if (val.startsWith('No')){
+  if (val?.startsWith('No, i')){
   return 'option4'}
-  if (val.startsWith('No Status')){
-  
+  else{
+   return 'option5'
     }
 }
 if (info?.status){
-  var selectedStatus = selector(info.status)
-}else{
-  // setSelectedDropdownValue('option5')
-  var selectedStatus = selector('No Status')
+  // var selectedStatus = selector(info.status)
+ 
 }
 
+else{
+  // setSelectedDropdownValue('option5')
+  // var selectedStatus = selector('No Status')
+}
+// const dispatch = useDispatch();
+const id = localStorage.getItem('userId')
 useEffect(() => {
-  if (info?.status) {
-    setSelectedDropdownValue(selector(info.status));
-  } else {
-    setSelectedDropdownValue('option5');
-  }
-}, [info]);
+  // dispatch(fetchUser(id))
+  if(savedApp){
+    var filteredProducts = currentUser?.filter((product) => product?.obj_id === info?._id)[0];
+    setSaved(filteredProducts);
+}
+
+if (info?.status) {
+  setSelectedDropdownValue(selector(info?.status));
+} 
+if(savedApp){
+  setSelectedDropdownValue(selector(filteredProducts?.status))
+  // console.log(selectedDropdownValue) 
+}
+// else {
+//   setSelectedDropdownValue('option5');
+// }
+}, [info,setSaved,currentUser,selectedDropdownValue, setSelectedDropdownValue, savedApp]);
+
 
 const [showOverlay, setShowOverlay] = useState(false);
 const [commentsPopup, setCommentsPopup] = useState(false);
@@ -54,59 +75,58 @@ if(info?.subscription?.date){
     year: '2-digit'
   });
 }else{
-  var formattedDate = ''
+ formattedDate = ''
 }
 
 if (info?.subscription?.comment){
   var comments = info.subscription.comment.length
 }else{
-  var comments = 0
+   comments = 0
 }
 
-if(info?.obj_id?.rating){
-  var rating = info.obj_id.rating
+if(info?.subscription?.user_ratings[0]?.rating){
+  var rating = info?.subscription?.user_ratings[0]?.rating
   var ratingValues = Object.values(rating);
   var totalValues = ratingValues.length;
-  
   var sum = ratingValues.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
   var average = sum / totalValues;
 }else{
-  var average = 0
+  average = 0
 }
 
 if (info?.obj_id?.logo){
   var logo = info.obj_id.logo
 }else{
-  var logo = info.logo
+    logo = info.logo
 }
 
 if (info?.obj_id?.name){
   var name = info.obj_id.name
 }else{
-  var name = info.name
+    name = info.name
 }
 if (info?.obj_id?.shortDescription){
   var shortDescription = info.obj_id.shortDescription
   const words = shortDescription.split(/\s+/);
   // Get the first 20 words
   const first20Words = words.slice(0, 20).join(" ");
-  var shortDescription = first20Words + '...'
+    shortDescription = first20Words + '...'
 }else{
-  var shortDescription = info.shortDescription
+    shortDescription = info.shortDescription
   const words = shortDescription.split(/\s+/);
   // Get the first 20 words
   const first20Words = words.slice(0, 20).join(" ");
-  var shortDescription = first20Words + '...'
+    shortDescription = first20Words + '...'
 }
 if (info?.subscription?.package){
   var subscriptionPackage =info.subscription.package
 }else{
-  var subscriptionPackage = ''
+    subscriptionPackage = ''
 }
 if (info?.subscription?.amount){
   var subscriptionAmount =info.subscription.amount
 }else{
-  var subscriptionAmount =  ''
+    subscriptionAmount =  ''
  
 }
 
@@ -116,14 +136,14 @@ const convertedText = category
   .split("-")
   .map(word => word.charAt(0).toUpperCase() + word.slice(1))
   .join(" ");
-  var category = convertedText
+    category = convertedText
 }else{
-  var category = info.Category
+    category = info.Category
   const convertedText = category
   .split("-")
   .map(word => word.charAt(0).toUpperCase() + word.slice(1))
   .join(" ");
-  var category = convertedText
+    category = convertedText
 }
 
 const handleDropdownChange = async(e) => {
@@ -134,27 +154,23 @@ const handleDropdownChange = async(e) => {
     setCommentsPopup(false)
     setRatingPopup(false)
   }
-  setSelectedDropdownValue(e.target.value);
+ 
   // var selectedValue = selector(e.target.value)
-  
-  // console.log(selectedValue)
+  setSelectedDropdownValue(e.target.value);
   if (e.target.value === 'option1'){
     var currentStatus = 'I am using it 👍'}
     if (e.target.value === 'option2'){
-      var currentStatus = 'Yes, i want to 🤩'}
+        currentStatus = 'Yes, i want to 🤩'}
       if (e.target.value === 'option3'){
-        var currentStatus = 'Maybe 🤔'}
+          currentStatus = 'Maybe 🤔'}
         if (e.target.value === 'option4'){
-          var currentStatus = "No, i don't 😑"}
+            currentStatus = "No, i don't 😑"}
           
-  // console.log(typeof(currentStatus))
 
-  const apiUrl =`https://appsalabackend-p20y.onrender.com/update-status/${info.obj_id._id}`
-  console.log(info.obj_id._id)
-  // const response = await fetch(apiUrl) // Replace with your API call
-  // const data = await response.json()
-  // return data;
-  // console.log('api calling')
+  const applicationID = info?.obj_id?._id ? info?.obj_id?._id : info?._id;
+  const apiUrl =`https://appsalabackend-p20y.onrender.com/update-status/${applicationID}`
+  console.log(applicationID)
+ 
   const authToken = localStorage.getItem("token");
   const requestOptions = {
     method: "PUT",
@@ -169,42 +185,14 @@ const handleDropdownChange = async(e) => {
     const response = await fetch(apiUrl, requestOptions);
     const data = await response.json();
     console.log("Response data:", data);
+ 
   } catch (error) {
     console.error("Error:", error);
   }
   console.log('done calling')
+  
 };
 
-function StarRating({ average }) {
-  const renderStars = () => {
-    const stars = [];
-
-    if(average === 0){
-      for (let i = 0; i < 5; i++) {
-        stars.push(<FaStar key="empty" style={{ color:"#D9D9D9" }} />);
-      }
-    }else{
-    const fullStars = Math.floor(average);
-    const remainingStar = average - fullStars;
-    const remainingStarColor = " #D9D9D9";
-
-
-    for (let i = 0; i < fullStars; i++) {
-      stars.push(<FaStar key={`full_${i}`} style={{ color: 'yellow' }} />);
-    }
-
-    if (remainingStar >= 0.5) {
-      stars.push(<FaStar key="half" style={{ color: 'yellow' }} />);
-      stars.push(<FaStar key="empty" style={{ color: remainingStarColor }} />);
-    } else if (remainingStar > 0) {
-      stars.push(<FaStar key="empty" style={{ color: remainingStarColor }} />);
-    }
-  }
-    return stars;
-  };
-
-  return <div>{renderStars()}</div>;
-}
 const handleCommentPopup = () => {
   setShowOverlay(true);
   setCommentsPopup(true)
@@ -229,10 +217,10 @@ const handleRatingPopup = () => {
         <div className='aligned'>
         <h3 style={{color: 'black'}}>{name}</h3>
         <div className="stars">
-        <FaStar style={{color: "yellow"}}/>
-          <FaStar style={{color: "yellow"}}/>
-          <FaStar style={{color: "yellow"}}/>
-          <FaStar style={{color: "yellow"}}/>
+        <FaStar style={{color: "#F11A7B"}}/>
+          <FaStar style={{color: "#F11A7B"}}/>
+          <FaStar style={{color: "#F11A7B"}}/>
+          <FaStar style={{color: "#F11A7B"}}/>
           <FaStar style={{color: " #D9D9D9"}}/>
         </div>
         <p>(149 Follows)</p>
@@ -246,13 +234,26 @@ const handleRatingPopup = () => {
             <FaArrowCircleRight/>
             <p>{category}</p>
             </div>
-            <p>My Rating</p>
+         
+           
+          {
+           
+            <>
+            <p style={{marginRight: '4px'}}>My Rating</p>
         <div className="stars"  onClick={handleRatingPopup}>
-        <StarRating average={average}/>
+        <StarRating rating={average}/>
         </div>
+            </>   
+          }
        
-        <LiaCommentSolid onClick={handleCommentPopup}/>
-        <p>comment <span style={{color: '#00A82D'}}>({comments})</span></p>
+   
+       {
+           <>
+        <LiaCommentSolid onClick={handleCommentPopup} style={{marginRight: '4px'}}/>
+         <p>comment <span style={{color: '#00A82D'}}>({comments})</span></p>
+        </>  
+       }
+          
         </div>
         </div>
         <div style={{marginTop: '20px'}}>
@@ -276,7 +277,7 @@ const handleRatingPopup = () => {
 
     {showOverlay && commentsPopup && (
         <div className="overlay" onDoubleClick={handleOverlayDoubleClick}>
-          <CommentPopup info={info} id={id}/>
+          <CommentPopup info={info} id={id} savedApp={saved}/>
         </div>
   )}
 

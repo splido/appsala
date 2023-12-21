@@ -1,6 +1,4 @@
 import logo from '../assets/img/new-logo.png'
-import seachIcon from '../assets/img/search.svg'
-import Button from './Button'
 import Menu from './Menu';
 import { useEffect, useState  } from "react"
 import SeachList from './SearchList';
@@ -101,13 +99,13 @@ if (isProfileRoute) {
     <div>
           {showOverlay && loginPopupOpen && (
         <div className="overlay" onDoubleClick={handleOverlayDoubleClick}>
-          <LoginPopup/>
+          <LoginPopup setLoginPopupOpen={setLoginPopupOpen}/>
         </div>
   )}
 
 {showOverlay && registerPopup && (
         <div className="overlay" onDoubleClick={handleOverlayDoubleClick}>
-          <RegisterPopup/>
+          <RegisterPopup setLoginPopupOpen={setLoginPopupOpen} setRegisterPopup={setRegisterPopup}/>
         </div>
   )}
 
@@ -160,7 +158,6 @@ if (isProfileRoute) {
                 user ? <><button type ='btn-light' className='button-light'>
                   <Link to = {`/profile/${userId}`} 
                   className='link'
-                  style={{ textDecoration: 'none'}}
                   >
                   Dashboard
                   </Link>

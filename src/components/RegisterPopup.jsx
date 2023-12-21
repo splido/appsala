@@ -1,13 +1,10 @@
 import NewLogo from '../assets/img/new-logo.png'
-import facebook from '../assets/img/facebook.png'
-import google from '../assets/img/google.png'
-import twitter from '../assets/img/twitter.png'
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { signupUser } from '../Reducers/AuthReducer';
 
-function RegisterPopup() {
+function RegisterPopup({setLoginPopupOpen, setRegisterPopup}) {
   const [credentials, setCredentials] = useState({
     email: '',
     password: '',
@@ -15,12 +12,14 @@ function RegisterPopup() {
     confirmPassword: '',
   });
 const dispatch = useDispatch();
-const loading = useSelector((state) => state.auth.loading);
-const error = useSelector((state) => state.auth.error);
 const user = useSelector((state) => state.auth.isAuthenticated);
 const userId = useSelector((state) => state.auth.user);
 const navigate = useNavigate()
 
+const handleClick = () => {
+  setLoginPopupOpen(true);
+  setRegisterPopup(false);
+}
 
 const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -41,14 +40,6 @@ const handleSubmit = (e) => {
               navigate(`/profile/${userId}`);
             }
     };
-
-    // let { email, password } = credentials
-    // dispatch(loginUser({ email, password }));
-    // if (user) {
-    //           navigate(`/profile/${userId}`);
-    //         } else {
-    //           alert('wrong email or password');
-    //         }
     };
 
   return (
@@ -113,7 +104,7 @@ const handleSubmit = (e) => {
                     <div className='register-button-div'>
                     <button type="submit" className='button-light'>Register</button>
                     <p className='registered'> Already Registered?
-                 <Link to={"/forgetpassword"}> Login</Link></p>
+                 <Link onClick={handleClick}> Login</Link></p>
                     </div>
                 </form>
     </div>

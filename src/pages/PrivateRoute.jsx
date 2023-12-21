@@ -1,6 +1,6 @@
 import React from 'react'
-import { Outlet, Navigate,useNavigate } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux';
+import { Outlet, Navigate} from 'react-router-dom'
+import { useSelector } from 'react-redux';
 function PrivateRoute() {
     // const navigate = useNavigate()
     const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);

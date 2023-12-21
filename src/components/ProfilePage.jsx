@@ -1,7 +1,7 @@
 import { PiPencilDuotone, PiPencilSlashDuotone } from 'react-icons/pi'
 import { AiOutlineEyeInvisible } from 'react-icons/ai'
 import {AiOutlineEye} from 'react-icons/ai'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { selectUser ,updateUser} from '../Reducers/userReducer'
 // import { signupUser } from '../Reducers/AuthReducer';

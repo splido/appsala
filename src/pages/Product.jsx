@@ -1,16 +1,9 @@
-import monday from '../assets/img/monday.png'
-import dribbble from '../assets/img/dribbble.png'
-import figma from '../assets/img/Group 96.png'
-import behance from '../assets/img/behance.png'
 import { LiaCommentSolid } from 'react-icons/lia'
-import { FaStar } from 'react-icons/fa'
 import StarRating from '../components/StarRating'
 import product from '../assets/img/product-image.png'
-import Button from '../components/Button'
 import LoginPopup from '../components/LoginPopup'
 import { FaBookmark, FaGlobe } from 'react-icons/fa';
 import { useParams } from 'react-router'
-import SingleProduct from '../components/SingleProduct'
 import { useEffect, useState } from "react"
 import SimilarList from '../components/SimilarList'
 import Spinner from '../components/Spinner'
@@ -19,63 +12,63 @@ import CommentPopup from '../components/CommentPopup'
 import RatingPopup from '../components/RatingPopup'
 import ReactionComponent from '../components/ReactionComponent'
 import { selectUser } from '../Reducers/userReducer'
+import { Link } from 'react-router-dom'
+import HurryUp from '../components/HurryUp'
+import RegisterPopup from '../components/RegisterPopup'
 function Product() {
-    
     const{ slug } = useParams()
+    const user = useSelector(selectUser)
+    const [singleProduct, setSingleProduct] = useState([])
     var input_string = slug
     var output_string = input_string.replace(/-/g, " ")
-    const [singleProduct, setSingleProduct] = useState([])
     const [loading, setLoading] = useState(true);
     const [showOverlay, setShowOverlay] = useState(false);
     const auth = useSelector((state) => state.auth)
     const [similar, setSimilar] = useState([])
-    const [isDisabled, setIsDisabled] = useState(true)
+    const [hurryUpPopup, setHurryUpPopup] = useState(false);
+    const [loginPopup, setLoginPopup] = useState(false);
+    const [registerPopup, setRegisterPopup] = useState(false);
     const [loginPopupOpen, setLoginPopupOpen] = useState(false);
+    console.log(loginPopupOpen)
     const [commentPopupOpen, setCommentPopupOpen] = useState(false);
     const [ratingPopupOpen, setRatingPopupOpen] = useState(false);
-    const user = useSelector(selectUser)
     const [followingAppRating, setFollowingAppRating] = useState([])
     const [isFollowing, setIsFollowing] = useState(false)
     const [followingAppComments, setFollowingAppComments] = useState([])
     const [followingAppCommentList, setFollowingAppCommentList] = useState([])
     const [currentStatus, setCurrentStatus] = useState('')
-    function StarRatings({ average }) {
-      const renderStars = () => {
-        const stars = [];
-    
-        if(average === 0){
-          for (let i = 0; i < 5; i++) {
-            stars.push(<FaStar key="empty" style={{ color:"#D9D9D9" }} />);
-          }
-        }else{
-        const fullStars = Math.floor(average);
-        const remainingStar = average - fullStars;
-        const remainingStarColor = " #D9D9D9";
-    
-    
-        for (let i = 0; i < fullStars; i++) {
-          stars.push(<FaStar key={`full_${i}`} style={{ color: '#F11A7B' }} />);
-        }
-    
-        if (remainingStar >= 0.5) {
-          stars.push(<FaStar key="half" style={{ color: '#F11A7B' }} />);
-          stars.push(<FaStar key="empty" style={{ color: remainingStarColor }} />);
-        } else if (remainingStar > 0) {
-          stars.push(<FaStar key="empty" style={{ color: remainingStarColor }} />);
+    useEffect(()=>{
+      
+      const apiUrl = 'https://appsalabackend-p20y.onrender.com/products'
+      const fetchData = async() =>{
+        const response = await fetch(apiUrl)
+        const data = await response.json()
+        const foundProducts = data.data.filter((product) => product.slug === slug);
+        setSingleProduct(foundProducts)
+        setSimilar(data.data.filter((product) => product?.Category === singleProduct[0]?.Category))
+        setLoading(false)
+      }
+      if (auth.isAuthenticated) {
+        var app = user?.products?.data?.following_app 
+        var following_app = app?.find((app)=> app?.obj_id?._id === singleProduct[0]?._id)
+        if(following_app){
+            setIsFollowing(true)
+            setFollowingAppRating(following_app?.subscription?.user_ratings[0]?.rating)
+            setFollowingAppCommentList(following_app?.subscription?.comment)
+            setFollowingAppComments(following_app)
+            setCurrentStatus(following_app?.status)
+        }if(!following_app){
+            setFollowingAppComments(singleProduct[0])
         }
       }
-        return stars;
-      };
-    
-      return <div>{renderStars()}</div>;
-    }
+        fetchData()
+      }, [setIsFollowing , auth.isAuthenticated,singleProduct, user?.products?.data?.following_app, singleProduct[0]?._id, followingAppRating, followingAppCommentList, followingAppComments, currentStatus, slug]);
 
     const handlePopup = () => {
       if(!auth.isAuthenticated){
           setShowOverlay(true)
-          setLoginPopupOpen(true)
+       setHurryUpPopup(true)
       }else{
-        setRatingPopupOpen(false)
           setShowOverlay(true)
           setLoginPopupOpen(false)
           setCommentPopupOpen(true)
@@ -84,13 +77,13 @@ function Product() {
     const handleLoginPopup = () => {
       if(!auth.isAuthenticated){
           setShowOverlay(true)
-          setLoginPopupOpen(true)
+       setHurryUpPopup(true)
       }
     }
     const handleRatingPopup = () => {
       if(!auth.isAuthenticated){
           setShowOverlay(true)
-          setLoginPopupOpen(true)
+       setHurryUpPopup(true)
       }else{
           setShowOverlay(true)
           setLoginPopupOpen(false)
@@ -98,37 +91,7 @@ function Product() {
           setRatingPopupOpen(true)
       }
     }
-
-     useEffect(()=>{
-      const apiUrl = 'https://appsalabackend-p20y.onrender.com/products'
-      const fetchData = async() =>{
-        const response = await fetch(apiUrl)
-        const data = await response.json()
-        const foundProducts = data.data.filter((product) => product.slug === slug);
-        setSingleProduct(foundProducts)
-        console.log(foundProducts)
-        if (auth.isAuthenticated) {
-          const app = user.products.data.following_app
-          const following_apps = app.map((app)=>app.obj_id._id)
-          following_apps.forEach((appId) => {
-              if (appId === singleProduct[0]?._id) {
-              setIsFollowing(true)
-              setFollowingAppRating(app.find((app)=> app.obj_id._id === singleProduct[0]?._id).subscription?.user_ratings[0]?.rating)
-              setFollowingAppCommentList(app.find((app)=> app.obj_id._id === singleProduct[0]?._id).subscription.comment)
-              setFollowingAppComments(app.find((app)=> app.obj_id._id === singleProduct[0]?._id))
-              setCurrentStatus(app.find((app)=> app?.obj_id?._id === singleProduct[0]?._id)?.status)
-              } else {
-                console.log('not following');
-              }
-            });
-          }
-        setSimilar(data.data.filter((product) => product?.Category === singleProduct[0]?.Category))
-        setLoading(false)
-      }
-      console.log(singleProduct[0]?._id)
- 
-        fetchData()
-      },[slug])
+   
 
       const handleOverlayDoubleClick = () => {
         setShowOverlay(false);
@@ -173,23 +136,43 @@ function Product() {
       var average = sum / totalValues;
       
     }else{
-      var average = 0
+       average = 0
+    }
+    // console.log(singleProduct[0])
+
+    const website = `http://${singleProduct[0]?.sellerDetails?.companyWebsite}`
+    if (loading) {
+      return <Spinner />;
     }
   return (
     <>
-       {showOverlay && loginPopupOpen && (
+       {showOverlay && hurryUpPopup && (
+        <div className="overlay" onDoubleClick={handleOverlayDoubleClick}>
+          <HurryUp setHurryUpPopup={setHurryUpPopup} setLoginPopup={setLoginPopup} setRegisterPopup={setRegisterPopup} />
+        </div>
+  )}
+{showOverlay && loginPopup && (
         <div className="overlay" onDoubleClick={handleOverlayDoubleClick}>
           <LoginPopup/>
         </div>
   )}
-   {showOverlay && commentPopupOpen && (
+  {showOverlay && registerPopup && (
         <div className="overlay" onDoubleClick={handleOverlayDoubleClick}>
-          <CommentPopup info={followingAppComments}/>
+          <RegisterPopup setLoginPopup={setLoginPopup} setRegisterPopup={setRegisterPopup} />
         </div>
   )}
-    {showOverlay && ratingPopupOpen && (
+   {showOverlay && commentPopupOpen && (
         <div className="overlay" onDoubleClick={handleOverlayDoubleClick}>
-          <RatingPopup info={followingAppComments}/>
+          <CommentPopup info={followingAppComments}/> 
+        </div>
+  )}
+    {showOverlay && ratingPopupOpen &&  (
+        <div className="overlay" onDoubleClick={handleOverlayDoubleClick}>
+          {
+          followingAppComments ?
+          <RatingPopup info={followingAppComments} setRatingPopup={setRatingPopupOpen} /> : <></>
+        }
+         
         </div>
   )}
 
@@ -201,7 +184,7 @@ function Product() {
           <img src={singleProduct[0]?.logo} alt=""/>
           <div>
           <h3>{singleProduct[0]?.name}</h3>
-          <StarRatings average={singleProduct[0]?.averageRating}/> 
+          <StarRating rating={singleProduct[0]?.averageRating} isDisabled ={true}/> 
            <p>749  Follows</p>
           </div>
           </div>
@@ -210,9 +193,9 @@ function Product() {
     <p className='review'>{singleProduct[0]?.review}</p>
     <div className='comment-rating'>
             <div className='my-rating'  onClick={handleRatingPopup}>
-                <p>My Rating </p>
+                <p>My Rating </p> 
                 {
-                isFollowing ? <StarRatings average={average}/> : <StarRating/>
+                isFollowing ? <StarRating rating={average}/> : <StarRating isDisabled ={true}/>
                 }
             </div>
    
@@ -220,14 +203,18 @@ function Product() {
         <LiaCommentSolid/>
         {
             isFollowing ? 
-            <p>comment <span style={{color: '#00A82D'}}>({followingAppCommentList.length})</span></p>
+            <p>comment <span style={{color: '#00A82D'}}>({followingAppCommentList?.length})</span></p>
              : <p className='no-comment' onClick={handlePopup}>Comment</p>
         }
         </div>
         </div>
     <div>
-                <button type= "btn-light" className='button' onClick={handleSave}> <FaBookmark className='icon'/> Save</button>
-                <button type= "btn-dark" className='button'> <FaGlobe className='icon'/> Visit Web</button>
+                <button type= "btn-light" className='button' onClick={handleSave} disabled={isFollowing} > <FaBookmark className='icon'/>
+                {
+                  isFollowing ? <span>Saved</span> : <span>Save</span>
+                }
+                 </button>
+                <button type= "btn-dark" className='button'> <Link to={website} className='button-link' target="_blank"> <FaGlobe className='icon'/> Visit Web </Link></button>
              </div>
     </div>
              
@@ -236,13 +223,10 @@ function Product() {
             <p className="question">What is {singleProduct[0]?.name}?</p>
             <p style={{color: "#454545"}}>{singleProduct[0]?.shortDescription} </p>
         </div>
-        <div className="product-bar" onClick={handlePopup}>
-            <p>
-                Do you wish to use {output_string}?
-            </p>
-            {
-                    isFollowing ? <ReactionComponent currentStatus={currentStatus} product={product}/> : <ReactionComponent isDisabled={isDisabled}/>
-            }
+        <div className="product-bar" onClick={handleLoginPopup}>
+            <p>Do you wish to use {output_string}?
+            </p>            
+            <ReactionComponent currentStatus={currentStatus} product={singleProduct[0]}/>
         </div>
     </header>
     <p className="highlighted">Productivity</p>
@@ -263,17 +247,12 @@ function Product() {
     <div className="container" style={{width:"60%"}}>
     <h1 className="heading">Similar Products / Alternatives</h1>
     </div>
-        {/* { similar ? (
-  <SimilarList similar={similar}/> 
-        ) :
-        <Spinner/>
-          } */}
-
+        
 {
 
 loading ? <Spinner/> :
 similar ? (
-  <SimilarList similar={similar}/> 
+  <SimilarList similar={similar} key={similar._id}/> 
 ):  
 <Spinner/> 
    
@@ -318,9 +297,7 @@ similar ? (
     <p className="bold">Conclusion</p>
     <p>The economy plan offered by GoDaddy.com provides essential services for most users, and is a great plan to start a website with. You will find it easy to access the basic package, as designed for everyone.The economy plan offered by GoDaddy.com provides essential services for most users, and is a great plan to start a website with. You will find it easy to access the basic package, as designed for everyone.</p>
 </div>
-<div className="grey-footer">
 
-        </div>
 </>
 
 

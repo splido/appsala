@@ -8,14 +8,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '../Reducers/AuthReducer';
 import { useEffect } from 'react';
 
-function LoginPopup() {
+function LoginPopup({setLoginPopupOpen}) {
   const [credentials, setCredentials] = useState({
     email: '',
     password: '',});
 const dispatch = useDispatch();
-const loading = useSelector((state) => state.auth.loading);
+// const loading = useSelector((state) => state.auth.loading);
 const error = useSelector((state) => state.auth.error);
-const user = useSelector((state) => state.auth.token);
+// const user = useSelector((state) => state.auth.token);
 const userId = useSelector((state) => state.auth.user);
 const navigate = useNavigate()
 
@@ -44,12 +44,13 @@ const handleSubmit = (e) => {
 
     useEffect(() => {
       if (userId) {
-        navigate(`/profile/${userId}`);
+        navigate(`/`);
+        setLoginPopupOpen(false)
       }
       if (error) {
         alert('Wrong Email or Password');
       }
-    }, [userId, navigate]);
+    }, [userId, navigate,error,setLoginPopupOpen]);
 
   return (
     <div className="login-pop">

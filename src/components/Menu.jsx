@@ -28,12 +28,11 @@ function Menu({ childs }) {
   return (
     <div className="dropdown-content">
       <ul>
-        {categories.map((item) => (
+        {categories.map((item,index) => (
           <li
             className="categories"
             onMouseEnter={() => handleMouseEnter(item)}
-            
-            key={item}
+            key={index}
           >
             {item}
           </li>

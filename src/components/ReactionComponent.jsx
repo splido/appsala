@@ -28,7 +28,7 @@ function ReactionComponent({currentStatus,isDisabled,product}) {
       setSelectedReaction(null)
     }else{
       setSelectedReaction(reaction);
-      console.log(typeof(value))
+      // console.log(typeof(value))
       const apiUrl =`https://appsalabackend-p20y.onrender.com/update-status/${product?._id}`
       const authToken = localStorage.getItem("token");
   const requestOptions = {

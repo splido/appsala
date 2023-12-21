@@ -3,40 +3,64 @@ import { LuLayoutDashboard } from 'react-icons/lu'
 import { RiLogoutBoxRLine } from 'react-icons/ri'
 import { HiOutlineUserCircle } from 'react-icons/hi'
 import { BsBookmark } from 'react-icons/bs'
-import { LiaStarSolid, LiaCommentSolid } from 'react-icons/lia'
+
 import logo from '../assets/img/logo.png'
 import sort from '../assets/img/sort.svg'
 import searchIcon from '../assets/img/search.svg'
 import ProfileProductsList from '../components/ProfileProductsList'
-import { useParams, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import Settings from '../components/Settings'
+
 import ProfilePage from '../components/ProfilePage'
 import { logoutUser } from '../Reducers/AuthReducer';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchUser } from '../Reducers/userReducer'
+
 import { useNavigate } from 'react-router-dom';
+import { selectProducts } from '../Reducers/ProductReducer'
 
 function Profile() {
-  const currentUser = useSelector((state) => state.user);
+  const products = useSelector(selectProducts);
+   const currentUser = useSelector((state) => state.user);
+
+
+  const followingApps = currentUser?.products?.data?.following_app
+  const [userApps, setUserApps] = useState(followingApps)
+
+  const id = localStorage.getItem('userId')
+  const dispatch = useDispatch();
+  const navigate = useNavigate()
+  
+  
+  useEffect(() => {
+    if (currentUser?.products?.data?.following_app) {
+      // If currentUser has data, set userApps and stop loading
+      setUserApps(currentUser.products.data.following_app);
+      // setSavedProducts(products?.data.filter((id) => id === currentUser.products.data.saved.forEach(id).obj_id))
+      const savedProductIds = currentUser.products.data.saved.map(item => item._id);
+      const filteredProducts = products?.data?.filter(product => savedProductIds.includes(product._id));
+      setSavedProducts(filteredProducts);
+
+      // console.log(savedProducts)
+      
+    }
+  }, [currentUser, products?.data]);
+
   const [sortFilter, setSortFilter] = useState(false);
-  const loading = useSelector((state) => state.user.loading);
-  const [userApps, setUserApps] = useState(currentUser.products?.data?.following_app)
+  
   const [activeComponent, setActiveComponent] = useState('dashboard');
-  const [sortOrder, setSortOrder] = useState('asc');
+  const sortOrder = 'asc';
+  // const [sortOrder, setSortOrder] = useState('asc');
   const [showOverlay, setShowOverlay] = useState(false);
   const [sortList, showSortList] = useState(false);
   const [user, setUser] = useState(currentUser.products?.data)
   const [searchVal, setSearchVal] = useState('')
-  const [savedApps, setSavedApps] = useState([])
+  const [savedApp, setSavedApp] = useState(false)
   const [selectedFilter, setSelectedFilter] = useState('All');
   const [selectedDropdownValue, setSelectedDropdownValue] = useState('option1');
   const [sortText, setSortText] = useState('Sort by');
-  // const {id} = useParams()
-  const id = localStorage.getItem('userId')
-
-  const dispatch = useDispatch();
-  const navigate = useNavigate()
+  const [savedProducts, setSavedProducts] = useState([])
+  console.log(sortFilter, sortOrder)
+ 
   
   const handleLogout = () => {
     window.location.reload();
@@ -44,8 +68,6 @@ function Profile() {
     navigate('/');
  
   };
-
-
   const handleSortClick = () => {
     showSortList(!sortList);
     setShowOverlay(true);
@@ -66,10 +88,7 @@ function Profile() {
   };
 
   const handleSortToggle = (type) => {
-    // console.log(userApps
     setShowOverlay(false)
-    // const newSortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
-    // setSortOrder(newSortOrder);
     if (type === 'latest') {
       setSortText('Latest');
       var sortedItems = [...userApps].sort((a, b) => {
@@ -77,19 +96,15 @@ function Profile() {
         var dateB = new Date(b.subscription.date);
         return dateA - dateB;
     })
-    // console.log(sortedItems)
     setUserApps(sortedItems);
-    console.log(userApps)
     } else if (type === 'oldest') {
       setSortText('Oldest');
-      var sortedItems = [...userApps].sort((a, b) => {  
+       sortedItems = [...userApps].sort((a, b) => {  
         var dateA = new Date(a.subscription.date);
         var dateB = new Date(b.subscription.date);
         return dateB - dateA;
     })
-    // console.log(sortedItems)
     setUserApps(sortedItems);
-    console.log(userApps)
    
   }
   if (type === 'highest') {
@@ -111,18 +126,17 @@ function Profile() {
   }
   setSortFilter(true)
 }
-  useEffect(() => {
-    dispatch(fetchUser(id));
-    // handleSortToggle('Latest')
-  }, [user,dispatch, userApps,id]);
-  
+
 const AllUsers = () =>{
+  setSavedApp(false)
   setUserApps(currentUser.products?.data?.following_app)
   setUser(currentUser.products?.data)
   setSelectedFilter('All')
+  setSortText('Sort by')
 }
 
 const handleFilterClick = (filter) => {
+  setSavedApp(false)
   if (filter === 'All') {
     AllUsers();
   } 
@@ -136,25 +150,27 @@ const handleFilterClick = (filter) => {
   } if (filter === 'Saved'){
     filterSaved()
   }
-  
   else {
     setSelectedFilter(filter); 
   }
+  setSortText('Sort by')
 };
 
 const filterComments = () =>{
- const filterCommented = user?.following_app?.filter((i) => (i.subscription.comment.length > 0))
+ const filterCommented = userApps?.filter((i) => (i.subscription.comment.length > 0))
  setUserApps(filterCommented)
  setSelectedFilter('Comments')
 }
 
 const filterSaved = () =>{
-  setUserApps(user?.saved)
+  setSavedApp(true)
+  setUserApps(savedProducts)
   setSelectedFilter('Saved')
  }
  
 const filterRatings = () =>{
-  const filterRated = user?.following_app?.filter((i) => (i.obj_id.rating))
+  setSavedApp(false)
+  const filterRated = userApps?.filter((i) => (i.subscription?.user_ratings[0]?.rating ))
   setUserApps(filterRated)
   setSelectedFilter('Ratings')
  }
@@ -194,38 +210,16 @@ const onHandleChange =(e)=>{
   setUserApps(filterSearch)
  }
 
- useEffect(() => {
-  
-  if(sortText== 'Latest' || sortText== 'Oldest' || sortText== 'Highest' || sortText== 'Lowest'){
-    handleSortToggle(sortText)
-    // setSortFilter(false)  
-  // You can also set other state variables here based on the fetched data
-}else if (!loading && currentUser.products) {
-  setUserApps(currentUser.products?.data?.following_app);
-  setSortText('Sort By')
-    // You can also set other state variables here based on the fetched data
-}
-}, [loading, currentUser.products]);
-
-// useEffect(() => {
-//     if(sortText== 'Latest' || sortText== 'Oldest' || sortText== 'Highest' || sortText== 'Lowest'){
-//       handleSortToggle(sortText)
-//       // setSortFilter(false)  
-//     // You can also set other state variables here based on the fetched data
-//   }
-// }, [sortText,handleSortToggle]);
-
   return (
     <div className="profile">
       <div className="sidebar">
-        <Link to='/'> 
+        <Link to={"/"}>
         <img src={logo} style={{ height:'50px'}}
         alt="" />
         </Link>
         <div   className={`icon ${activeComponent === 'dashboard' ? 'filter-selected' : ''}`}>
 
-        <LuLayoutDashboard  
-      
+        <LuLayoutDashboard
         onClick={() => handleSidebarClick('dashboard')} /> <p>Dashboard</p>
         </div>
         <div  className={`icon ${activeComponent === 'profilepage' ? 'filter-selected' : ''}`}>
@@ -304,14 +298,13 @@ const onHandleChange =(e)=>{
         }
     
 {
-   <ProfileProductsList userApps={userApps} id={id}/>
+   <ProfileProductsList userApps={userApps} id={id} savedApp={savedApp}/>
 }
        
       </div>
 }
 
   {activeComponent === 'profilepage' && <ProfilePage/>}  
-  {/* {activeComponent === 'settings' && <Settings user={user}/>} */}
       
     </div>
   );

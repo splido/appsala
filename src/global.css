@@ -135,9 +135,9 @@ input[type="text"] {
     text-align: center;
     opacity: 50%;
     width: 300px;
-    padding: 6px 50px;
+    padding: 15px 50px;
     border: 1px solid #D3D3D3 ;
-    border-radius: 5px;
+    border-radius: 50px;
   }
 
 .header-btn{
@@ -302,13 +302,45 @@ input[type="text"] {
     color:#454545;
 }
 footer{
-    background-color: #454545;
+    background-color: #0E0A27;
+    color: white;
     margin: 0;
-    padding: 0;
+    padding: 4rem ;
     height: 256px;
     display: flex;
     justify-content: center;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
 }
+.footer-first{
+    margin-top: 2rem;
+}
+.footer-first>*{
+    padding: 2px 0;
+}
+.footer-div{
+    display: flex;
+    flex-direction: column;
+    margin-left: 4rem;
+}
+.footer-div>*{
+    padding: 0.8rem 0;
+}
+.footer-div a{
+    color: white;
+    text-decoration: none;
+}
+.footer-icon{
+    color:  #F11A7B;
+    font-size: 2rem;
+    margin-right: 5px;
+}
+.footer-social{
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+}
+
 .product-heading{
     font-size:3.5rem;
     color: white;
@@ -320,7 +352,7 @@ footer{
     font-size:5rem;
 }
 .product-header{
-    background: url("./assets/img/product-header.png") center/cover no-repeat;
+    /* background: url("./assets/img/product-header.png") center/cover no-repeat; */
     height: 500px;
     margin-top: 3rem;
 }
@@ -1294,7 +1326,7 @@ input[type='checkbox']:checked {
 .home-footer{
     background: rgb(2,0,36);
     background: linear-gradient(175deg, rgba(2,0,36,1) 0%, rgba(54,13,53,1) 100%);
-    height: 750px;
+    height: 830px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1343,4 +1375,84 @@ input[type='checkbox']:checked {
     color: #757575;
     text-decoration: none;
     cursor: pointer;
+}
+.button-link{
+    text-decoration: none;
+    color: #F11A7B
+}
+.button-link:hover{
+    color: white;
+}
+
+.header-search{
+    border: 1px solid #B5B4B4;
+    border-radius: 50px;
+}
+
+.header-search::placeholder {
+    /* Style the placeholder text */
+    font-size: 16px; /* Adjust the size as needed */
+    color: #555;    /* Adjust the color as needed */
+    padding-left: 24px; /* Adjust the padding to create space for the icon */
+    background-image: url('./assets/img/search.svg'); /* URL to your search icon image */
+    background-size: 16px 16px; /* Adjust the size of the icon */
+    background-position: 5px center; /* Adjust the position of the icon */
+    background-repeat: no-repeat;
+  }
+
+  .button-light .link{
+    text-decoration: none;
+    color: white;
+  }
+
+  
+  .button-light:hover .link{
+    color: #F11A7B;
+  }
+  .hurryUp{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .hurryUp .hurrygrid {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+  }
+
+  .hurrygrid img{
+    margin-top: 15px;
+    height: 40px;
+    background-color: #FFE5AD;
+    padding: 1rem;
+    border-radius: 30%;
+  }
+
+  .hurrygrid p{
+    color: #757575;
+    font-size: 12px;
+    margin-top: 1rem;
+    line-height: 16px;
+    width: 80%;
+  }
+  .hurrygrid h4{
+    color: #454545;
+    font-size: 16px;
+  }
+  
+  .hurry-button-div .registered{
+    font-size: 10px;
+    color: #494949;
+    text-align: center;
+    margin-left: 1rem;
+}
+
+.hurry-button-div{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.hurry-pop .comment-heading{
+    margin-left: -25rem;
 }

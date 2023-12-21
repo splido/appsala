@@ -13,8 +13,8 @@ function SimilarList({similar}) {
     <div className="reviews-section">
     <div className="cards container">
         {
-            similar_products?.map((product)=>(
-                <div className="reviews-card">
+            similar_products?.map((product, index)=>(
+                <div className="reviews-card" key={index}>
                 <div>
                     <img src={product?.logo} alt="" style={{height: '20px'}}/>
                 </div>

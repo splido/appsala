@@ -18,15 +18,15 @@ export const updateUser = createAsyncThunk('updateUser', async (body) => {
   return res.json();
 });
 
-export const fetchUser = createAsyncThunk('fetchUser', async (id) => {
-  const apiUrl =`https://appsalabackend-p20y.onrender.com/profile/${id}`
+export const fetchUser = createAsyncThunk('fetchUser', async (userId) => {
+  const apiUrl =`https://appsalabackend-p20y.onrender.com/profile/${userId}`
   const response = await fetch(apiUrl) // Replace with your API call
   const data = await response.json()
   return data;
 });
 
-export const updateUserData = createAsyncThunk('updateUserData', async (id) => {
-  const apiUrl =`https://appsalabackend-p20y.onrender.com/profile/${id}`
+export const updateUserData = createAsyncThunk('updateUserData', async (userId) => {
+  const apiUrl =`https://appsalabackend-p20y.onrender.com/profile/${userId}`
   const response = await fetch(apiUrl) // Replace with your API call
   const data = await response.json()
   return data;
@@ -65,7 +65,7 @@ const userSlice = createSlice({
         state.error = action.error.message;
       })
       .addCase(updateUserData.pending, state => {
-        state.loading = true;
+        state.loading = false;
         state.products = null;
       })
       .addCase(updateUserData.fulfilled, (state, action) => {
