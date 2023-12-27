@@ -56,7 +56,7 @@ if(savedApp){
 // else {
 //   setSelectedDropdownValue('option5');
 // }
-}, [info,setSaved,currentUser,selectedDropdownValue, setSelectedDropdownValue, savedApp]);
+}, []);
 
 
 const [showOverlay, setShowOverlay] = useState(false);
@@ -182,6 +182,7 @@ const handleDropdownChange = async(e) => {
   };
 
   try {
+    console.log(requestOptions)
     const response = await fetch(apiUrl, requestOptions);
     const data = await response.json();
     console.log("Response data:", data);

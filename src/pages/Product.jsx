@@ -29,7 +29,6 @@ function Product() {
     const [loginPopup, setLoginPopup] = useState(false);
     const [registerPopup, setRegisterPopup] = useState(false);
     const [loginPopupOpen, setLoginPopupOpen] = useState(false);
-    console.log(loginPopupOpen)
     const [commentPopupOpen, setCommentPopupOpen] = useState(false);
     const [ratingPopupOpen, setRatingPopupOpen] = useState(false);
     const [followingAppRating, setFollowingAppRating] = useState([])
@@ -143,6 +142,10 @@ function Product() {
     const website = `http://${singleProduct[0]?.sellerDetails?.companyWebsite}`
     if (loading) {
       return <Spinner />;
+    }
+
+    if(!singleProduct[0]){
+      return <h2>Product not found</h2>
     }
   return (
     <>

@@ -130,12 +130,15 @@ if (isProfileRoute) {
       <Menu childs={categories} />
       </div>)}
         </li>
-     
-                    <li className='dropdown' onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}><a href="/">Blog</a>
+        <li className='dropdown'>
+          <Link to={"/blog"} >Blog</Link>
+          {/* <a href="/blog">Blog</a> */}
+           </li>
+                    {/* <li className='dropdown' onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}><a href="/blog">Blog</a>
                     {isBlogMenuOpen && (
                        <div >
       <Menu/></div>)}
-                    </li>
+                    </li> */}
                    
                 </ul>
             </div>

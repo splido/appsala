@@ -33,15 +33,15 @@ function ProductList() {
     }
 
  var input_string = slug
- 
+
+//  var background = category?.category?.image[0]?.url ? category?.category?.image[0]?.url : 'https://picsum.photos/200/300'
+ //  background: `url(${background}) center/cover no-repeat`,
  var heading = input_string.replace(/-/g, " ")
   heading = capitalizeWordsAfterSpace(heading)
         return (
         <div>
            <p className="page-path"><Link to={'/'} className='product-link' style={{color:'#101112'}}>Home </Link>/ {heading}</p>
-            <header className="product-header" style={{
-        background: `url(${category?.category?.image[0]?.url}) center/cover no-repeat`,
-      }}>
+            <header className="product-header">
             <div className="product-header-inner">
             <h1 className="product-heading">
                 The Best {heading} Apps in <span>2023</span>

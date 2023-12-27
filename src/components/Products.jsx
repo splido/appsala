@@ -15,12 +15,13 @@ function Products({products}) {
        {
 
         loading ? <Spinner/> :
-        products ? (
+        products && typeof(products) != 'string' ? (
           products.map((product)=>(
                 <ProductItem key={product._id} product = {product}/>
             ))
         ): <>
-        <Spinner/> </>
+        <p>No Item</p>
+         </>
            
         } 
     </div>

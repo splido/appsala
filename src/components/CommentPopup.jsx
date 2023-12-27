@@ -43,7 +43,7 @@ function CommentPopup({ info, savedApp }) {
     // setComments(currentComments);
     // console.log('calling fetch')
 
-  }, [info, setID, savedApp,currentComments,savedComments]);
+  }, [info, setID, savedApp,savedComments]);
 
   const handleChange = (e) => {
     setComment(e.target.value);

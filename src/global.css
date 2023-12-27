@@ -7,7 +7,7 @@ body{
     font-family: 'Manrope', sans-serif;
 }
 .container{
-    max-width:80%;
+    max-width: 1140px;
     margin: auto;
 }
 
@@ -353,6 +353,7 @@ footer{
 }
 .product-header{
     /* background: url("./assets/img/product-header.png") center/cover no-repeat; */
+    background: rgb(2,0,36);
     height: 500px;
     margin-top: 3rem;
 }
@@ -1455,4 +1456,127 @@ input[type='checkbox']:checked {
 
 .hurry-pop .comment-heading{
     margin-left: -25rem;
+}
+
+
+/* blog-hero */
+
+
+.blog-hero .blog-title{
+    color: #454545;
+}
+.blog-title{
+    font-size: 30px;
+    font-weight: 600;
+    color: #2B2A35;
+}
+.blog-hero{
+    background-color: #FFF7E5;
+}
+
+.blog-hero-inner{
+    padding-top: 4rem;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+}
+
+.blog-type{
+    font-size: 16px;
+}
+.author-info{
+    display: flex;
+    align-items: flex-start;
+}
+.author-info .flex{
+    margin-top: -2rem;
+}
+
+.author-info img{
+    margin-right: 1rem;
+}
+
+.author-info .author-name{
+    font-weight: 600;
+}
+.text-light{
+    color: #757575;
+}
+
+
+.time{
+    margin-left: 10px;
+}
+
+.top-reviews{
+    margin-top: -1rem;
+}
+
+.blog-hero-card{
+    padding: 10px;
+    background-color: white;
+    border-radius: 10px;
+    margin: 10px 0;
+}
+.blog-hero-card img[alt="card-img"]{
+    margin-right: 1rem;
+}
+
+.flex{
+    display: flex;
+    align-items: center;
+}
+
+.star-name h2{
+    margin-bottom: -1rem;
+}
+
+.dark-text{
+    color: #000;
+}
+
+.stars p{
+    margin-left: 10px;
+    font-weight: 600;
+}
+
+.articles .bar{
+    height: 430px;
+}
+.articles .latest{
+    font-size: 30px;
+    color: #454545;
+}
+.blogs-grid{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 1rem;
+}
+
+.blog-card img[alt="blog-img"]{
+    height: 231px;
+    width: 375px;
+}
+.blog-card .blog-title{
+    font-size: 24px;
+}
+
+
+.navigator{
+    display: flex;
+    font-size: 1rem;
+    margin: 4rem 0;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+.selected-navigator{
+    padding: 1rem 1.2rem;
+    background-color: #F11A7B;
+    border-radius: 50%;
+    color: white;
+}
+
+.navigator>*{
+    margin: 0 1rem;
 }

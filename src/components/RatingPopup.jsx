@@ -48,7 +48,6 @@ const dispatch = useDispatch();
   }, [
     info?.obj_id?._id,
     info?._id,
-    currentRatings,
   ]);
 
   function handleStarClick(aspect, value) {

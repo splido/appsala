@@ -59,7 +59,7 @@ function Profile() {
   const [selectedDropdownValue, setSelectedDropdownValue] = useState('option1');
   const [sortText, setSortText] = useState('Sort by');
   const [savedProducts, setSavedProducts] = useState([])
-  console.log(sortFilter, sortOrder)
+  // console.log(sortFilter, sortOrder)
  
   
   const handleLogout = () => {
@@ -184,7 +184,7 @@ const filterStatus = () =>{
     setUserApps(filterStatus)
   }
   if (selectedDropdownValue === 'option3'){
-    const filterStatus = user?.following_app?.filter((i) => (i.status === 'May be 🤔'))
+    const filterStatus = user?.following_app?.filter((i) => (i.status === 'Maybe 🤔'))
     setUserApps(filterStatus)
   }
   if (selectedDropdownValue === 'option4'){
@@ -265,7 +265,7 @@ const onHandleChange =(e)=>{
         <select id="dropdown" onChange={handleDropdownChange} value={selectedDropdownValue} >
         <option value="option1">I am using it</option>
         <option value="option2">Yes, I want to </option>
-         <option value="option3">May be</option>
+         <option value="option3">Maybe</option>
          <option value="option4">No, I don't </option>
         </select>
           </div>

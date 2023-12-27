@@ -2,6 +2,7 @@ import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
 import Addcompany from "./components/Addcompany";
 import Home from "./pages/Home";
+import Blog from "./pages/Blog";
 import Product from "./pages/Product";
 import ProductList from "./pages/ProductList";
 import { BrowserRouter as Router, Route,Routes } from 'react-router-dom';
@@ -38,6 +39,7 @@ function App() {
      <Navbar products={products} /> 
     <Routes>
     <Route exact path="/" element={<Home products={products}/>} />
+    <Route exact path="/blog" element={<Blog/>} />
     <Route path="/category/:slug" element={<ProductList/>} />
     <Route path="/profile/:id" element={<PrivateRoute/>} >
     

@@ -70,11 +70,11 @@ const Addcompany = () => {
   };
 
 
-  const [appMedia, setAppMedia] = useState({
+  const  appMedia  =  {
     officialScreenshots: [],
     officialVideos: [],
     officialDownloads: [],
-  });
+  } 
 
   const handleAddAppPricing = () => {
     setAppPricing([
@@ -89,20 +89,20 @@ const Addcompany = () => {
 
 
 
-  const handleAppMediaChange = (event, field) => {
-    const file = event.target.files[0];
-    if (!file) return;
+  // const handleAppMediaChange = (event, field) => {
+  //   const file = event.target.files[0];
+  //   if (!file) return;
 
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
+  //   const reader = new FileReader();
+  //   reader.readAsDataURL(file);
 
-    reader.onload = () => {
-      setAppMedia({
-        ...appMedia,
-        [field]: [...appMedia[field], reader.result],
-      });
-    };
-  };
+  //   reader.onload = () => {
+  //     setAppMedia({
+  //       ...appMedia,
+  //       [field]: [...appMedia[field], reader.result],
+  //     });
+  //   };
+  // };
 
 
 
