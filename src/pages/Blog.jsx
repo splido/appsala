@@ -112,18 +112,15 @@ const [articles, setArticles] = useState([])
   
   {
     articles.map((article, index)=>{
-      {
-        console.log(article)
-      }
       return(
         <div className="blog-card" key={index}>
-        <img src={blogImage} alt="blog-img"/>
+        <img src={`https://res.cloudinary.com/creyo-com/image/upload/v1703682257/appsala/blog/${article.featured_image}`} alt="blog-img"/>
         <p className="blog-type">{article.post_type.name}</p>
         <p className="blog-title">{article.title}</p>
         <p className="blog-desc">{article.seo_description}</p>
         <div className="author-info">
             <img  src={author}alt=""/>
-            <div><p className="author-name">Edem Metzler</p>
+            <div><p className="author-name">{article.authors.name}</p>
               <div className="flex"><p className="text-light">
   {new Date(article.date).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })}
 </p>
