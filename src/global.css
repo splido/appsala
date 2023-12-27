@@ -1519,6 +1519,8 @@ input[type='checkbox']:checked {
 }
 .blog-hero-card img[alt="card-img"]{
     margin-right: 1rem;
+    width: 50px;
+    height: 50px;
 }
 
 .flex{
