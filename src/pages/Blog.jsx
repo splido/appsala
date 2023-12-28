@@ -1,9 +1,9 @@
 import star from '../assets/img/star.png'
 import blogImage from '../assets/img/blog-img.png'
 import author from '../assets/img/author.png'
-import monday from '../assets/img/monday.png'
 import man from '../assets/img/man.png' 
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import {supabase} from '../config/supabase.js'
 function Blog() {
 const [products, setProducts] = useState([])
@@ -78,6 +78,7 @@ const [articles, setArticles] = useState([])
           
             products.map((product, index)=>{
               return(
+               
                 <div className="blog-hero-card" key={index}>
                 <div className="flex">
                 <img src={product.logo} alt="card-img"/>
@@ -95,6 +96,7 @@ const [articles, setArticles] = useState([])
                 </div>
                 <p>{product.shortDescription.split(/\s+/).slice(0, 20).join(' ')}.....</p>
                 </div>
+           
               )
              
              
@@ -113,8 +115,10 @@ const [articles, setArticles] = useState([])
   {
     articles.map((article, index)=>{
       return(
+      
         <div className="blog-card" key={index}>
-        <img src={`https://res.cloudinary.com/creyo-com/image/upload/v1703682257/appsala/blog/${article.featured_image}`} alt="blog-img"/>
+            <Link to={`/blog/${article.url}`}>
+        <img src={`https://res.cloudinary.com/creyo-com/image/upload/v1703682257/appsala/blog/${article.featured_image}`} alt="blog-img"/></Link>
         <p className="blog-type">{article.post_type.name}</p>
         <p className="blog-title">{article.title}</p>
         <p className="blog-desc">{article.seo_description}</p>

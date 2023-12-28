@@ -12,6 +12,7 @@ import Profile from "./pages/Profile";
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUser } from './Reducers/userReducer'
 import { fetchProducts, selectProducts } from './Reducers/ProductReducer'
+import BlogPost from "./pages/BlogPost";
 
 function App() {
   const products = useSelector(selectProducts);
@@ -40,6 +41,7 @@ function App() {
     <Routes>
     <Route exact path="/" element={<Home products={products}/>} />
     <Route exact path="/blog" element={<Blog/>} />
+    <Route exact path="/blog/:slug" element={<BlogPost/>} />
     <Route path="/category/:slug" element={<ProductList/>} />
     <Route path="/profile/:id" element={<PrivateRoute/>} >
     
