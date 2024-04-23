@@ -33,9 +33,11 @@ function Product() {
     const [ratingPopupOpen, setRatingPopupOpen] = useState(false);
     const [followingAppRating, setFollowingAppRating] = useState([])
     const [isFollowing, setIsFollowing] = useState(false)
+    const [isSave, setIsSaved] = useState(false)
     const [followingAppComments, setFollowingAppComments] = useState([])
     const [followingAppCommentList, setFollowingAppCommentList] = useState([])
     const [currentStatus, setCurrentStatus] = useState('')
+    let saved_app;
     useEffect(()=>{
       
       const apiUrl = 'https://appsalabackend-p20y.onrender.com/products'
@@ -45,9 +47,11 @@ function Product() {
         const foundProducts = data.data.filter((product) => product.slug === slug);
         setSingleProduct(foundProducts)
         setSimilar(data.data.filter((product) => product?.Category === singleProduct[0]?.Category))
+        
         setLoading(false)
       }
       if (auth.isAuthenticated) {
+        setIsSaved(user?.products?.data?.saved.find((app)=> app?._id === singleProduct[0]?._id)? true : false)
         var app = user?.products?.data?.following_app 
         var following_app = app?.find((app)=> app?.obj_id?._id === singleProduct[0]?._id)
         if(following_app){
@@ -214,7 +218,7 @@ function Product() {
     <div>
                 <button type= "btn-light" className='button' onClick={handleSave} disabled={isFollowing} > <FaBookmark className='icon'/>
                 {
-                  isFollowing ? <span>Saved</span> : <span>Save</span>
+                  isFollowing || isSave ? <span>Saved</span> : <span>Save</span>
                 }
                  </button>
                 <button type= "btn-dark" className='button'> <Link to={website} className='button-link' target="_blank"> <FaGlobe className='icon'/> Visit Web </Link></button>
