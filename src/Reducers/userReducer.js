@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 const userId = localStorage.getItem('userId');
 const token = localStorage.getItem('token');
 export const updateUser = createAsyncThunk('updateUser', async (body) => {
-  const apiUrl =`https://appsalabackend-p20y.onrender.com/update-user/${userId}`
+  const apiUrl =`https://appsala-backend.netlify.app/.netlify/functions/index/update-user/${userId}`
   // const response = await fetch(apiUrl) // Replace with your API call
   // const data = await response.json()
   // return data;
@@ -19,14 +19,14 @@ export const updateUser = createAsyncThunk('updateUser', async (body) => {
 });
 
 export const fetchUser = createAsyncThunk('fetchUser', async (userId) => {
-  const apiUrl =`https://appsalabackend-p20y.onrender.com/profile/${userId}`
+  const apiUrl =`https://appsala-backend.netlify.app/.netlify/functions/index/profile/${userId}`
   const response = await fetch(apiUrl) // Replace with your API call
   const data = await response.json()
   return data;
 });
 
 export const updateUserData = createAsyncThunk('updateUserData', async (userId) => {
-  const apiUrl =`https://appsalabackend-p20y.onrender.com/profile/${userId}`
+  const apiUrl =`https://appsala-backend.netlify.app/.netlify/functions/index/profile/${userId}`
   const response = await fetch(apiUrl) // Replace with your API call
   const data = await response.json()
   return data;

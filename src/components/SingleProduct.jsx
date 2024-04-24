@@ -4,7 +4,7 @@ function SingleProduct({slug}) {
     
     const [singleProduct, setSingleProduct] = useState([])
      useEffect(()=>{
-      const apiUrl = 'https://appsalabackend-p20y.onrender.com/products'
+      const apiUrl = 'https://appsala-backend.netlify.app/.netlify/functions/index/products'
       const fetchData = async() =>{
         const response = await fetch(apiUrl)
         const data = await response.json()

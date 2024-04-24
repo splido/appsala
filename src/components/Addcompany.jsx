@@ -224,7 +224,7 @@ const Addcompany = () => {
   }, []);
 
   const fetchCategories = () => {
-    fetch("https://appsalabackend-p20y.onrender.com/subcategory")
+    fetch("https://appsala-backend.netlify.app/.netlify/functions/index/subcategory")
       .then((response) => response.json())
       .then((data) => {
         // Check if the response contains a "data" property that is an array
@@ -269,7 +269,7 @@ const Addcompany = () => {
 
 
       // Post the form data to https://localhost:5000/create_products using fetch
-      const response = await fetch("https://appsalabackend-p20y.onrender.com/create_products", {
+      const response = await fetch("https://appsala-backend.netlify.app/.netlify/functions/index/create_products", {
         method: "POST",
         body: formDataToUpload,
       });

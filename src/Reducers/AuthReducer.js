@@ -13,8 +13,8 @@ const initialState = {
   error: null,
   isAuthenticated: Boolean(localStorage.getItem('token')),
   };
-const signupUrl = 'https://appsalabackend-p20y.onrender.com/signup'
-const apiUrl = 'https://appsalabackend-p20y.onrender.com/login'
+const signupUrl = 'https://appsala-backend.netlify.app/.netlify/functions/index/signup'
+const apiUrl = 'https://appsala-backend.netlify.app/.netlify/functions/index/login'
 
 export const signupUser = createAsyncThunk('signup', async (body, { rejectWithValue }) => {
   try {

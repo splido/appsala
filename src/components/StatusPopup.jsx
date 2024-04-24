@@ -31,7 +31,7 @@ const handleSubmit = async(e) => {
   e.preventDefault()
   const applicationID = info?.obj_id?._id ? info?.obj_id?._id : info?._id;
   const authToken = localStorage.getItem('access_token')
-  const api = `https://appsalabackend-p20y.onrender.com/updatePricingInfoInUserSchema/${applicationID}`
+  const api = `https://appsala-backend.netlify.app/.netlify/functions/index/updatePricingInfoInUserSchema/${applicationID}`
   const requestOptions = {
     method: 'PUT',
     headers: {

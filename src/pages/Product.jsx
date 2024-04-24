@@ -40,7 +40,7 @@ function Product() {
     let saved_app;
     useEffect(()=>{
       
-      const apiUrl = 'https://appsalabackend-p20y.onrender.com/products'
+      const apiUrl = 'https://appsala-backend.netlify.app/.netlify/functions/index/products'
       const fetchData = async() =>{
         const response = await fetch(apiUrl)
         const data = await response.json()
@@ -105,7 +105,7 @@ function Product() {
         setLoginPopupOpen(true)
     }else{ 
       const authToken = localStorage.getItem('access_token')
-      const api = `https://appsalabackend-p20y.onrender.com/saved_product/${singleProduct[0]?._id}`
+      const api = `https://appsala-backend.netlify.app/.netlify/functions/index/saved_product/${singleProduct[0]?._id}`
       const requestOptions = {
         method: 'POST',
         headers: {

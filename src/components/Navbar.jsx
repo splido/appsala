@@ -16,7 +16,7 @@ function Navbar({products}) {
   useEffect(()=>{
     fetchCategories()
   },[])
-  const apiCategoryUrl = 'https://appsalabackend-p20y.onrender.com/category'
+  const apiCategoryUrl = 'https://appsala-backend.netlify.app/.netlify/functions/index/category'
 
   const fetchCategories = async() =>{
     try{

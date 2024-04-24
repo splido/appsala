@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 
-const apiUrl = 'https://appsalabackend-p20y.onrender.com/products'
+const apiUrl = 'https://appsala-backend.netlify.app/.netlify/functions/index/products'
 
 export const fetchProducts = createAsyncThunk('fetchProducts', async () => {
   const response = await fetch(apiUrl) // Replace with your API call

@@ -29,7 +29,7 @@ function ReactionComponent({currentStatus,isDisabled,product}) {
     }else{
       setSelectedReaction(reaction);
       // console.log(typeof(value))
-      const apiUrl =`https://appsalabackend-p20y.onrender.com/update-status/${product?._id}`
+      const apiUrl =`https://appsala-backend.netlify.app/.netlify/functions/index/update-status/${product?._id}`
       const authToken = localStorage.getItem("token");
   const requestOptions = {
     method: "PUT",

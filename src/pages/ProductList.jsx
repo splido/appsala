@@ -11,7 +11,7 @@ function ProductList() {
     const product_list = category?.data?.slice(0,population)
     // console.log(category.category.image[0].url)
     useEffect(() => {
-      const apiCategoryUrl = `https://appsalabackend-p20y.onrender.com/category/${slug}`
+      const apiCategoryUrl = `https://appsala-backend.netlify.app/.netlify/functions/index/category/${slug}`
     const fetchCategory = async() =>{
       try{
         const response = await fetch(apiCategoryUrl)

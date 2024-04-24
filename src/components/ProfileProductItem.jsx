@@ -168,7 +168,7 @@ const handleDropdownChange = async(e) => {
           
 
   const applicationID = info?.obj_id?._id ? info?.obj_id?._id : info?._id;
-  const apiUrl =`https://appsalabackend-p20y.onrender.com/update-status/${applicationID}`
+  const apiUrl =`https://appsala-backend.netlify.app/.netlify/functions/index/update-status/${applicationID}`
   console.log(applicationID)
  
   const authToken = localStorage.getItem("token");

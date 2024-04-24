@@ -9,7 +9,7 @@ function Blog() {
 const [products, setProducts] = useState([])
 const [articles, setArticles] = useState([])
   useEffect(()=>{
-    const apiUrl = 'https://appsalabackend-p20y.onrender.com/products'
+    const apiUrl = 'https://appsala-backend.netlify.app/.netlify/functions/index/products'
     // const fetchData = async() =>{
     //   const response = await fetch(apiUrl)
     //   var data = await response.json()

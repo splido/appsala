@@ -23,7 +23,7 @@ function CommentPopup({ info, savedApp }) {
   // }
   // const ID = info?.obj_id?._id || info._id
   // console.log(ID)
-  const apiUrl = `https://appsalabackend-p20y.onrender.com/comment/${ID}`;
+  const apiUrl = `https://appsala-backend.netlify.app/.netlify/functions/index/comment/${ID}`;
   const dispatch = useDispatch();
   const userId = localStorage.getItem("userId");
   useEffect(() => { 

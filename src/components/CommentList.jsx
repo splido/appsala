@@ -16,7 +16,7 @@ const DeleteComment = (id) => {
   const commentIdToDelete = id; // Replace with the actual comment ID
   // console.log(commentIdToDelete)
 
-  const apiUrl = `https://appsalabackend-p20y.onrender.com/deleteComment/${commentIdToDelete}`;
+  const apiUrl = `https://appsala-backend.netlify.app/.netlify/functions/index/deleteComment/${commentIdToDelete}`;
   
   const requestOptions = {
     method: 'DELETE',
