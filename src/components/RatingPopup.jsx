@@ -5,7 +5,7 @@ import StarRating from './StarRating';
 function RatingPopup({info,setRatingPopup}) {
   const [ID, setID] = useState("")
   
-  const authToken = localStorage.getItem('access_token')
+  const authToken = localStorage.getItem('token')
   const apiUrl = `https://appsala-backend.netlify.app/.netlify/functions/index/rating/${ID}`; 
   // const [rating, setRating] = useState(0);
   var currentRatings = useSelector((state) => state.user?.products?.data?.following_app?.find((app)=> app?.obj_id?._id === info?.obj_id?._id)?.subscription?.user_ratings) || []; 

@@ -104,7 +104,7 @@ function Product() {
         setShowOverlay(true)
         setLoginPopupOpen(true)
     }else{ 
-      const authToken = localStorage.getItem('access_token')
+      const authToken = localStorage.getItem('token')
       const api = `https://appsala-backend.netlify.app/.netlify/functions/index/saved_product/${singleProduct[0]?._id}`
       const requestOptions = {
         method: 'POST',

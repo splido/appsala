@@ -15,7 +15,7 @@ function CommentPopup({ info, savedApp }) {
   const [comments, setComments] = useState(currentComments);
   // console.log(typeof(comments))
  
-  const authToken = localStorage.getItem("access_token")
+  const authToken = localStorage.getItem("token")
   // if( info?.obj_id?._id){
   //   var ID = info?.obj_id?._id
   // }else{
