@@ -22,28 +22,35 @@ function Profile() {
   const products = useSelector(selectProducts);
    const currentUser = useSelector((state) => state.user);
 
-
-  const followingApps = currentUser?.products?.data?.following_app
-  const [userApps, setUserApps] = useState(followingApps)
+const [followingProducts, setFollowingProducts] = useState([])
+  // const followingApps = currentUser?.products?.data?.following_app
+  const [userApps, setUserApps] = useState(followingProducts)
 
   const id = localStorage.getItem('userId')
   const dispatch = useDispatch();
   const navigate = useNavigate()
   
-  
   useEffect(() => {
     if (currentUser?.products?.data?.following_app) {
+      
       // If currentUser has data, set userApps and stop loading
-      setUserApps(currentUser.products.data.following_app);
+      const followingProductIds = currentUser.products.data.following_app.map(item => item._id);
+      setFollowingProducts(products.data.filter(product => followingProductIds.includes(product._id)))
+      // console.log(currentUser?.products?.data?.following_app)
+      // setUserApps(followingProducts);
       // setSavedProducts(products?.data.filter((id) => id === currentUser.products.data.saved.forEach(id).obj_id))
       const savedProductIds = currentUser.products.data.saved.map(item => item._id);
-      const filteredProducts = products?.data?.filter(product => savedProductIds.includes(product._id));
+      const filteredProducts = products.data.filter(product => savedProductIds.includes(product._id));
       setSavedProducts(filteredProducts);
 
       // console.log(savedProducts)
-      
     }
-  }, [currentUser, products?.data]);
+  }, [currentUser, products]);
+
+  useEffect(() => {
+    // console.log(followingProducts)
+    setUserApps(followingProducts);
+  }, [followingProducts]);
 
   const [sortFilter, setSortFilter] = useState(false);
   
@@ -129,7 +136,7 @@ function Profile() {
 
 const AllUsers = () =>{
   setSavedApp(false)
-  setUserApps(currentUser.products?.data?.following_app)
+  setUserApps(followingProducts)
   setUser(currentUser.products?.data)
   setSelectedFilter('All')
   setSortText('Sort by')

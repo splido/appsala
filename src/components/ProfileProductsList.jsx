@@ -1,41 +1,37 @@
-import React, { useState, useEffect } from 'react'; // Import useEffect and useState
-
+import React, { useState, useEffect } from 'react';
 import ProfileProductItem from './ProfileProductItem';
 import { useSelector } from 'react-redux';
 import Spinner from './Spinner';
 
 function ProfileProductsList({ userApps, id, savedApp }) {
   const loading = useSelector((state) => state.user.loading);
-
-  // State to control whether to show the spinner or content
   const [showSpinner, setShowSpinner] = useState(true);
 
   useEffect(() => {
-    // Use a setTimeout to hide the spinner after 2 seconds
     const timer = setTimeout(() => {
       setShowSpinner(false);
-    }, 2000); // 2000 milliseconds (2 seconds)
+    }, 2000);
 
     return () => {
-      clearTimeout(timer); // Clear the timer if the component unmounts
+      clearTimeout(timer);
     };
-  }, []); // Empty dependency array to run this effect only once
+  }, []);
 
-  if (userApps?.length === 0) {
-    return <h3>No items</h3>;
-  } else {
-    if (loading || showSpinner) {
-      // Show the spinner while loading or for the extra 2 seconds
-      return <Spinner />;
-    }
-    return (
-      <>
-        {userApps?.map((info) => (
-          <ProfileProductItem info={info} id={info._id} key={info._id} savedApp={savedApp} />
-        ))}
-      </>
-    );
+  if (loading || showSpinner) {
+    return <Spinner />;
   }
+
+  if (!userApps || userApps.length === 0) {
+    return <h3>No items</h3>;
+  }
+
+  return (
+    <>
+      {userApps.map((info) => (
+        <ProfileProductItem info={info} id={info._id} key={info._id} savedApp={savedApp} />
+      ))}
+    </>
+  );
 }
 
 export default ProfileProductsList;

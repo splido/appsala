@@ -12,7 +12,10 @@ import { useSelector } from 'react-redux';
 
 function ProfileProductItem({info,savedApp}) {
   const [saved, setSaved] = useState()
+  const [followingApp, setFollowingApp] = useState()
   const currentUser = useSelector((state) => state?.user?.products?.data?.saved);
+  const currentUserApps = useSelector((state) => state?.user?.products?.data?.following_app);
+  // const followingApps = 
   const [selectedDropdownValue, setSelectedDropdownValue] = useState('');
 const selector = (val)=>{
   // console.log(val)
@@ -28,34 +31,20 @@ const selector = (val)=>{
    return 'option5'
     }
 }
-if (info?.status){
-  // var selectedStatus = selector(info.status)
- 
-}
-
-else{
-  // setSelectedDropdownValue('option5')
-  // var selectedStatus = selector('No Status')
-}
-// const dispatch = useDispatch();
 const id = localStorage.getItem('userId')
 useEffect(() => {
-  // dispatch(fetchUser(id))
+ 
   if(savedApp){
-    var filteredProducts = currentUser?.filter((product) => product?.obj_id === info?._id)[0];
+    var filteredProducts = currentUser?.filter((product) => product?._id === info?._id)[0];
     setSaved(filteredProducts);
+    setSelectedDropdownValue(selector(filteredProducts?.status))
+}else{
+ var filteredProduct = currentUserApps?.filter((product) => product?._id === info?._id)[0];
+ setFollowingApp(filteredProduct)
+ setSelectedDropdownValue(selector(filteredProduct?.status));
+ console.log(followingApp)
 }
 
-if (info?.status) {
-  setSelectedDropdownValue(selector(info?.status));
-} 
-if(savedApp){
-  setSelectedDropdownValue(selector(filteredProducts?.status))
-  // console.log(selectedDropdownValue) 
-}
-// else {
-//   setSelectedDropdownValue('option5');
-// }
 }, []);
 
 
@@ -78,21 +67,43 @@ if(info?.subscription?.date){
  formattedDate = ''
 }
 
-if (info?.subscription?.comment){
-  var comments = info.subscription.comment.length
-}else{
+if (followingApp){
+  // console.log(followingApp)
+  var comments = followingApp?.subscription?.comment.length  
+}
+else if(savedApp){
+  var comments = currentUser?.find((app)=> app?._id === info?._id)?.comment.length;
+}
+else{
    comments = 0
 }
 
-if(info?.subscription?.user_ratings[0]?.rating){
-  var rating = info?.subscription?.user_ratings[0]?.rating
-  var ratingValues = Object.values(rating);
-  var totalValues = ratingValues.length;
-  var sum = ratingValues.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-  var average = sum / totalValues;
-}else{
+if(followingApp){
+  var rating = followingApp?.subscription?.user_ratings[0]?.rating
+  if(rating){
+    var ratingValues = Object.values(rating);
+    var totalValues = ratingValues.length;
+    var sum = ratingValues.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+    var average = sum / totalValues;
+  }
+ 
+}
+ else if(savedApp){
+  var filteredProducts = currentUser?.filter((product) => product?._id === info?._id)[0];
+  var rating = filteredProducts?.user_ratings[0]?.rating
+  if(rating){
+    var ratingValues = Object.values(rating);
+    var totalValues = ratingValues.length;
+    var sum = ratingValues.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+    var average = sum / totalValues
+  }
+ 
+}
+else{
   average = 0
 }
+
+// console.log(average)
 
 if (info?.obj_id?.logo){
   var logo = info.obj_id.logo
@@ -139,8 +150,7 @@ const convertedText = category
     category = convertedText
 }else{
     category = info.Category
-  const convertedText = category
-  .split("-")
+  const convertedText = category?.split("-")
   .map(word => word.charAt(0).toUpperCase() + word.slice(1))
   .join(" ");
     category = convertedText
@@ -167,7 +177,11 @@ const handleDropdownChange = async(e) => {
             currentStatus = "No, i don't 😑"}
           
 
-  const applicationID = info?.obj_id?._id ? info?.obj_id?._id : info?._id;
+if(savedApp){
+  var applicationID = info?._id
+}else{
+  applicationID = followingApp[0]?._id
+}
   const apiUrl =`https://appsala-backend.netlify.app/.netlify/functions/index/update-status/${applicationID}`
   console.log(applicationID)
  
@@ -278,13 +292,13 @@ const handleRatingPopup = () => {
 
     {showOverlay && commentsPopup && (
         <div className="overlay" onDoubleClick={handleOverlayDoubleClick}>
-          <CommentPopup info={info} id={id} savedApp={saved}/>
+          <CommentPopup info={info} id={id} savedApp={savedApp}/>
         </div>
   )}
 
   {showOverlay && ratingPopup && (
         <div className="overlay" onDoubleClick={handleOverlayDoubleClick}>
-          <RatingPopup info={info} setRatingPopup={setRatingPopup} id={id}/>
+          <RatingPopup info={info} setRatingPopup={setRatingPopup} id={id} savedApp={savedApp}/>
         </div>
   )}
 

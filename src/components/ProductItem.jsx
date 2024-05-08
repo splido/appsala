@@ -2,7 +2,7 @@
 // import monday from '../assets/img/monday.png'
 import { Link } from 'react-router-dom'
 import { LiaCommentSolid } from 'react-icons/lia'
-// import { FaStar } from 'react-icons/fa'
+import { BsBookmark } from 'react-icons/bs'
 import { useState, useEffect } from 'react'
 import StarRating from './StarRating'
 // import StarRating from './StarRating'
@@ -17,6 +17,7 @@ import HurryUp from './HurryUp'
 
 function ProductItem({product}) {
     const isDisabled = true
+    const [isSaved, setIsSaved] = useState(false)
     const [hurryUpPopup, setHurryUpPopup] = useState(false);
     const [loginPopup, setLoginPopup] = useState(false);
     const [commentPopupOpen, setCommentPopupOpen] = useState(false);
@@ -25,17 +26,18 @@ function ProductItem({product}) {
     const [showOverlay, setShowOverlay] = useState(false);
     const user = useSelector(selectUser)
     const auth = useSelector((state) => state.auth)
-    const [followingAppRating, setFollowingAppRating] = useState([])
+    const [appRating, setAppRating] = useState([])
     const [isFollowing, setIsFollowing] = useState(false)
-    const [followingAppComments, setFollowingAppComments] = useState([])
-    const [followingAppCommentList, setFollowingAppCommentList] = useState([])
+    const [appInfo, setAppInfo] = useState([])
+    const [appCommentList, setAppCommentList] = useState([])
     const [currentStatus, setCurrentStatus] = useState('')
-
     var shortDescription = product.shortDescription
     const words = shortDescription.split(/\s+/);
     const first20Words = words.slice(0, 20).join(" ");
-      shortDescription = first20Words + '...'
-
+    shortDescription = first20Words + '...'
+    const saved_app = user?.products?.data?.saved.find((app)=> app._id == product._id) ? true : false
+    const following_app = user?.products?.data?.following_app.find((app)=> app._id == product._id) ? true : false
+    // console.log(saved_app)
       const handlePopup = () => {
         
         if(!auth.isAuthenticated){
@@ -70,37 +72,63 @@ function ProductItem({product}) {
       };
     useEffect(() => {
         if (auth.isAuthenticated) {
-            const following_apps = user?.products?.data?.following_app?.map((app)=>app.obj_id._id)
-            following_apps?.forEach((appId) => {
+          if (saved_app){
+            const save_apps = user?.products?.data?.saved?.map((app)=>app._id)
+            save_apps?.forEach((appId) => {
+                if (appId === product._id) {
+                  // console.log('following', appId);
+                  setIsSaved(true)
+                 setAppRating(user.products.data.saved.find((app)=> app._id === product._id)?.user_ratings[0]?.rating)
+                 setAppCommentList(user.products.data.saved.find((app)=> app._id === product._id).comment)
+                 setAppInfo(user.products.data.saved.find((app)=> app._id === product._id))
+                setCurrentStatus(user.products?.data?.saved?.find((app)=> app?._id === product?._id)?.status)
+                } 
+              });
+          }
+          else if(following_app){
+            const followed_apps = user?.products?.data?.following_app?.map((app)=>app._id)
+            followed_apps?.forEach((appId) => {
                 if (appId === product._id) {
                   // console.log('following', appId);
                   setIsFollowing(true)
-                 setFollowingAppRating(user.products.data.following_app.find((app)=> app.obj_id._id === product._id).subscription?.user_ratings[0]?.rating)
-                 setFollowingAppCommentList(user.products.data.following_app.find((app)=> app.obj_id._id === product._id).subscription.comment)
-                 setFollowingAppComments(user.products.data.following_app.find((app)=> app.obj_id._id === product._id))
-                setCurrentStatus(user.products?.data?.following_app?.find((app)=> app?.obj_id?._id === product?._id)?.status)
+                 setAppRating(user.products.data.following_app.find((app)=> app._id === product._id).subscription?.user_ratings[0]?.rating)
+                 setAppCommentList(user.products.data.following_app.find((app)=> app._id === product._id).subscription.comment)
+                 setAppInfo(user.products.data.following_app.find((app)=> app._id === product._id).subscription.comment)
+                setCurrentStatus(user.products?.data?.following_app?.find((app)=> app?._id === product?._id)?.status)
                 } 
               });
-            } else {
+            }
+            else {
               setIsFollowing(false)
-             setFollowingAppRating([])
-             setFollowingAppCommentList([])
-             setFollowingAppComments(product)
+              setIsSaved(false)
+             setAppRating([])
+             setAppCommentList([])
+            //  setAppInfo()
             setCurrentStatus('')
             }
-      }, [ user?.products?.data?.following_app, product._id, auth.isAuthenticated, product, setIsFollowing,setFollowingAppRating, setFollowingAppCommentList, setFollowingAppComments, setCurrentStatus]);
+            }             
+            else {
+              setIsFollowing(false)
+              setIsSaved(false)
+             setAppRating([])
+             setAppCommentList([])
+            //  setAppInfo()
+            setCurrentStatus('')
+            }
 
+      }, []);
+//   }, [ user?.products?.data?.following_app, product._id, auth.isAuthenticated, product, setIsFollowing,setAppRating, setAppCommentList, setAppInfo, setCurrentStatus]
 
 const average_calculator = (rating) =>  {
-  //var rating = followingAppRating
+  //var rating = appRating
   var ratingValues = Object.values(rating);
   var totalValues = ratingValues.length;
   var sum = ratingValues.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
   var average = sum / totalValues;
   return average
 }
-      if(followingAppRating){
-        var average = average_calculator(followingAppRating)
+      if(appRating){
+        var average = average_calculator(appRating)
         
       }else{
           average = 0
@@ -129,12 +157,12 @@ const average_calculator = (rating) =>  {
 
    {showOverlay && commentPopupOpen && (
         <div className="overlay" onDoubleClick={handleOverlayDoubleClick}>
-          <CommentPopup info={followingAppComments}/>
+          <CommentPopup info={appInfo} savedApp={isSaved}/>
         </div>
   )}
     {showOverlay && ratingPopupOpen && (
         <div className="overlay" onDoubleClick={handleOverlayDoubleClick}>
-          <RatingPopup info={followingAppComments} setRatingPopup={setRatingPopupOpen}/>
+          <RatingPopup info={appInfo} setRatingPopup={setRatingPopupOpen} savedApp={isSaved}/>
         </div>
   )}
      <div className="product-info">
@@ -165,7 +193,7 @@ const average_calculator = (rating) =>  {
             <div className='my-rating' onClick={handleRatingPopup}>
                 <p>My Rating </p>
             {
-                isFollowing ? <StarRating rating={average}/> : <StarRating isDisabled ={true} />
+                isFollowing || isSaved ? <StarRating rating={average}/> : <StarRating isDisabled ={true} />
             }
             {/* <StarRating average={average}/> */}
             </div>
@@ -173,12 +201,18 @@ const average_calculator = (rating) =>  {
         <div className='my-comments' onClick={handlePopup} style={{cursor: 'pointer'}}>
         <LiaCommentSolid />
         {
-            isFollowing ? 
-            <p>comment <span style={{color: '#00A82D'}}>({followingAppCommentList.length})</span></p>
+            isFollowing  || isSaved  ? 
+            <p>comment <span style={{color: '#00A82D'}}>({appCommentList.length})</span></p>
           : <p className='no-comment' onClick={handlePopup}>Comment</p>
         }
-        {/* <p>comment {followingAppComments.length} </p> */}
+        {/* <p>comment {followingappInfo.length} </p> */}
         </div>
+
+        {
+          isSaved ? <div className='product-item-saved'>
+           <BsBookmark/>
+          </div> : <></>
+        }
         </div>
             </div>
            
@@ -189,7 +223,7 @@ const average_calculator = (rating) =>  {
                     Do you wish to use {product.name}?
                 </p>
                 {
-                    isFollowing ? <ReactionComponent currentStatus={currentStatus} product={product}/> : <ReactionComponent isDisabled={isDisabled}/>
+                    isFollowing || isSaved ? <ReactionComponent currentStatus={currentStatus} product={product}/> : <ReactionComponent isDisabled={isDisabled}/>
                 }
                 {/* // <ReactionComponent currentStatus={currentStatus}/> */}
             </div>

@@ -2,19 +2,26 @@ import { useState, useEffect } from 'react';
 import { updateUserData } from "../Reducers/userReducer";
 import { useDispatch,useSelector } from "react-redux";
 import StarRating from './StarRating';
-function RatingPopup({info,setRatingPopup}) {
+function RatingPopup({info,setRatingPopup, savedApp}) {
   const [ID, setID] = useState("")
   
   const authToken = localStorage.getItem('token')
   const apiUrl = `https://appsala-backend.netlify.app/.netlify/functions/index/rating/${ID}`; 
   // const [rating, setRating] = useState(0);
-  var currentRatings = useSelector((state) => state.user?.products?.data?.following_app?.find((app)=> app?.obj_id?._id === info?.obj_id?._id)?.subscription?.user_ratings) || []; 
+  var currentRatings = useSelector((state) => state.user?.products?.data?.following_app?.find((app)=> app?._id === info?._id)?.subscription?.user_ratings) || []; 
+  var savedRatings = useSelector((state) => state.user?.products?.data?.saved?.find((app)=> app?._id === info?._id)?.user_ratings) || [];
   // var currentRatings = useSelector((state) => state.user?.products?.data?.following_app?.find((app) => app.obj_id._id === info.obj_id._id).subscription?.user_ratings);
 
   // Check if currentRatings is an empty array and assign a default value if it is
-  if (Array.isArray(currentRatings) && currentRatings.length > 0 && currentRatings[0]?.rating) {
+  if(savedApp){
+    if (savedApp && Array.isArray(savedRatings) && savedRatings.length > 0 && savedRatings[0]?.rating){
+      currentRatings = savedRatings[0]?.rating;
+    }
+  }
+  else if (Array.isArray(currentRatings) && currentRatings.length > 0 && currentRatings[0]?.rating) {
     currentRatings = currentRatings[0]?.rating;
-  } else {
+  }
+  else {
     currentRatings = []; // Replace 'defaultValue' with the value you want to assign when user_ratings is an empty array
   }
   
@@ -36,14 +43,13 @@ function RatingPopup({info,setRatingPopup}) {
 const dispatch = useDispatch();
   useEffect(() => { 
 
-    if( info?.obj_id?._id){
-      setID(info?.obj_id?._id)
-     }else{
-      setID(info?._id)
-     }
-   
+    // if( info?.obj_id?._id){
+    //   setID(info?.obj_id?._id)
+    //  }else{
+    //   setID(info?._id)
+    //  }
+    setID(info?._id)
     setSelectedRatings(currentRatings)
-    // console.log('calling fetch')
 
   }, [
     info?.obj_id?._id,
@@ -75,6 +81,7 @@ const dispatch = useDispatch();
       const data = await response.json();
       // setSelectedRatings(currentRatings)
       console.log('Response data:', data);
+      console.log(apiUrl)
        dispatch(updateUserData(userId))   
       // Handle the response data here
     } catch (error) {

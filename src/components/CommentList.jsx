@@ -1,5 +1,6 @@
 import { FaUser } from "react-icons/fa";
 import { ImBin2 } from "react-icons/im";
+import { useEffect } from "react";
 
 function CommentList({comment, setComments, comments}) {
 

@@ -31,42 +31,69 @@ function Product() {
     const [loginPopupOpen, setLoginPopupOpen] = useState(false);
     const [commentPopupOpen, setCommentPopupOpen] = useState(false);
     const [ratingPopupOpen, setRatingPopupOpen] = useState(false);
-    const [followingAppRating, setFollowingAppRating] = useState([])
+    const [appRating, setAppRating] = useState([])
     const [isFollowing, setIsFollowing] = useState(false)
-    const [isSave, setIsSaved] = useState(false)
-    const [followingAppComments, setFollowingAppComments] = useState([])
-    const [followingAppCommentList, setFollowingAppCommentList] = useState([])
+    const [isSaved, setIsSaved] = useState(false)
+    const [appInfo, setAppInfo] = useState([])
+    const [appCommentList, setAppCommentList] = useState([])
     const [currentStatus, setCurrentStatus] = useState('')
-    let saved_app;
-    useEffect(()=>{
-      
-      const apiUrl = 'https://appsala-backend.netlify.app/.netlify/functions/index/products'
-      const fetchData = async() =>{
-        const response = await fetch(apiUrl)
-        const data = await response.json()
-        const foundProducts = data.data.filter((product) => product.slug === slug);
-        setSingleProduct(foundProducts)
-        setSimilar(data.data.filter((product) => product?.Category === singleProduct[0]?.Category))
-        
-        setLoading(false)
-      }
-      if (auth.isAuthenticated) {
-        setIsSaved(user?.products?.data?.saved.find((app)=> app?._id === singleProduct[0]?._id)? true : false)
-        var app = user?.products?.data?.following_app 
-        var following_app = app?.find((app)=> app?.obj_id?._id === singleProduct[0]?._id)
-        if(following_app){
-            setIsFollowing(true)
-            setFollowingAppRating(following_app?.subscription?.user_ratings[0]?.rating)
-            setFollowingAppCommentList(following_app?.subscription?.comment)
-            setFollowingAppComments(following_app)
-            setCurrentStatus(following_app?.status)
-        }if(!following_app){
-            setFollowingAppComments(singleProduct[0])
-        }
-      }
-        fetchData()
-      }, [setIsFollowing , auth.isAuthenticated,singleProduct, user?.products?.data?.following_app, singleProduct[0]?._id, followingAppRating, followingAppCommentList, followingAppComments, currentStatus, slug]);
+    let save_app = false;
+    let followed_app = false;
 
+    // Fetch products and set initial state
+useEffect(() => {
+  const apiUrl = 'https://appsala-backend.netlify.app/.netlify/functions/index/products';
+  const fetchData = async () => {
+    const response = await fetch(apiUrl);
+    const data = await response.json();
+    return data.data;
+  };
+
+  fetchData()
+    .then((products) => {
+      const foundProducts = products.filter((product) => product.slug === slug);
+      setSingleProduct(foundProducts);
+      if (foundProducts.length > 0) {
+        setSimilar(products.filter((product) => product?.Category === foundProducts[0]?.Category));
+      }
+      setLoading(false);
+    })
+    .catch((error) => {
+      console.error('Error fetching products:', error);
+    });
+}, [slug]);
+
+// Handle logic dependent on singleProduct
+useEffect(() => {
+  if (singleProduct && user?.products?.data) {
+    const save_app = user.products.data.saved?.find((app) => app._id === singleProduct[0]?._id);
+    const followed_app = user.products.data.following_app?.find((app) => app._id === singleProduct[0]?._id);
+
+    if (followed_app) {
+      setIsFollowing(true);
+      setAppRating(followed_app.subscription?.user_ratings[0]?.rating);
+      setAppCommentList(followed_app.subscription?.comment);
+      setAppInfo(followed_app);
+      setCurrentStatus(followed_app.status);
+    } else if (save_app) {
+      setIsSaved(true);
+      setAppRating(save_app.user_ratings[0]?.rating);
+      setAppCommentList(save_app.comment);
+      setAppInfo(save_app);
+      setCurrentStatus(save_app.status);
+    } else {
+      setIsFollowing(false);
+      setIsSaved(false);
+      setAppRating([]);
+      setAppCommentList([]);
+      setCurrentStatus('');
+    }
+  }
+}, [singleProduct, user]);
+
+// Render your component using singleProduct, similar, etc.
+
+    
     const handlePopup = () => {
       if(!auth.isAuthenticated){
           setShowOverlay(true)
@@ -128,9 +155,9 @@ function Product() {
     }
     }
     //   setSimilar(similar[0])
-    if(followingAppRating){
+    if(appRating){
         
-      var rating = followingAppRating
+      var rating = appRating
       
       var ratingValues = Object.values(rating);
       var totalValues = ratingValues.length;
@@ -170,14 +197,14 @@ function Product() {
   )}
    {showOverlay && commentPopupOpen && (
         <div className="overlay" onDoubleClick={handleOverlayDoubleClick}>
-          <CommentPopup info={followingAppComments}/> 
+          <CommentPopup info={appInfo} savedApp={isSaved}/> 
         </div>
   )}
     {showOverlay && ratingPopupOpen &&  (
         <div className="overlay" onDoubleClick={handleOverlayDoubleClick}>
           {
-          followingAppComments ?
-          <RatingPopup info={followingAppComments} setRatingPopup={setRatingPopupOpen} /> : <></>
+          appInfo ?
+          <RatingPopup info={appInfo} setRatingPopup={setRatingPopupOpen}  savedApp={isSaved}/> : <></>
         }
          
         </div>
@@ -202,27 +229,33 @@ function Product() {
             <div className='my-rating'  onClick={handleRatingPopup}>
                 <p>My Rating </p> 
                 {
-                isFollowing ? <StarRating rating={average}/> : <StarRating isDisabled ={true}/>
+                isFollowing || isSaved ? <StarRating rating={average}/> : <StarRating isDisabled ={true}/>
                 }
             </div>
    
         <div className='my-comments'  onClick={handlePopup}>
         <LiaCommentSolid/>
         {
-            isFollowing ? 
-            <p>comment <span style={{color: '#00A82D'}}>({followingAppCommentList?.length})</span></p>
+            isFollowing || isSaved ? 
+            <p>comment <span style={{color: '#00A82D'}}>({appCommentList?.length})</span></p>
              : <p className='no-comment' onClick={handlePopup}>Comment</p>
         }
         </div>
         </div>
+        
     <div>
-                <button type= "btn-light" className='button' onClick={handleSave} disabled={isFollowing} > <FaBookmark className='icon'/>
+      { !isFollowing ?
+                <button className={isSaved ? "button button-light" : "button"} onClick={handleSave} disabled={isSaved} > <FaBookmark className='icon'/>
                 {
-                  isFollowing || isSave ? <span>Saved</span> : <span>Save</span>
+                  isSaved ? <span>Saved</span> : <span>Save</span>
                 }
                  </button>
-                <button type= "btn-dark" className='button'> <Link to={website} className='button-link' target="_blank"> <FaGlobe className='icon'/> Visit Web </Link></button>
-             </div>
+                 : <></>
+                  }
+                <button type= "btn-dark" className='button '> <a to={website} className='button-link' target="_blank"> <FaGlobe className='icon'/> Visit Web </a></button>
+             
+                </div>
+
     </div>
              
         </div>

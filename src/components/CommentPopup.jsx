@@ -9,9 +9,9 @@ function CommentPopup({ info, savedApp }) {
   const [ID, setID] = useState("")
   // console.log(info._id)
   const [comment, setComment] = useState("");
-  var savedComments = useSelector((state) => state.user?.products?.data?.saved?.find((app)=> app?.obj_id === info?._id)?.comment) || [];
+  var savedComments = useSelector((state) => state.user?.products?.data?.saved?.find((app)=> app?._id === info?._id)?.comment) || [];
   // console.log(savedComments)
-  var currentComments = useSelector((state) => state.user?.products?.data?.following_app?.find((app)=> app?.obj_id?._id === info?.obj_id?._id)?.subscription?.comment) || [];
+  var currentComments = useSelector((state) => state.user?.products?.data?.following_app?.find((app)=> app?._id === info?._id)?.subscription?.comment) || [];
   const [comments, setComments] = useState(currentComments);
   // console.log(typeof(comments))
  

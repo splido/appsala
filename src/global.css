@@ -1384,7 +1384,9 @@ input[type='checkbox']:checked {
 .button-link:hover{
     color: white;
 }
-
+.button:hover a{
+    color: white;
+}
 .header-search{
     border: 1px solid #B5B4B4;
     border-radius: 50px;
@@ -1561,7 +1563,10 @@ input[type='checkbox']:checked {
 .blog-card .blog-title{
     font-size: 24px;
 }
-
+.product-item-saved{
+   color: #F11A7B;
+   margin-left: 1rem;
+}
 .navigator{
     display: flex;
     font-size: 1rem;
