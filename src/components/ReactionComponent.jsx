@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux'
+import { updateUserData } from "../Reducers/userReducer";
 
 function ReactionComponent({currentStatus,isDisabled,product}) {
-  // console.log(product)
-  // console.log(type  currentStatus);
+  const dispatch = useDispatch();
   if(currentStatus){
     if(currentStatus.startsWith("I am")){
       currentStatus = "thumbs-up"
@@ -16,6 +17,7 @@ function ReactionComponent({currentStatus,isDisabled,product}) {
   }
 
   
+const id = localStorage.getItem('userId')
   
   useEffect(() => {
     // If the currentStatus prop changes, update selectedReaction
@@ -31,6 +33,8 @@ function ReactionComponent({currentStatus,isDisabled,product}) {
       // console.log(typeof(value))
       const apiUrl =`https://appsala-backend.netlify.app/.netlify/functions/index/update-status/${product?._id}`
       const authToken = localStorage.getItem("token");
+      console.log(apiUrl)
+      console.log('product id' , product._id)
   const requestOptions = {
     method: "PUT",
     headers: {
@@ -44,6 +48,7 @@ function ReactionComponent({currentStatus,isDisabled,product}) {
     const response = await fetch(apiUrl, requestOptions);
     const data = await response.json();
     console.log("Response data:", data);
+    dispatch(updateUserData(id))  
   } catch (error) {
     console.error("Error:", error);
   }
@@ -77,7 +82,7 @@ function ReactionComponent({currentStatus,isDisabled,product}) {
       <div
         className={`reaction ${selectedReaction === 'maybe' ? 'selected' : ''}`}
         onClick={() => handleReactionClick('maybe','Maybe 🤔')}
-        value = 'May be 🤔'
+        value = 'Maybe 🤔'
       >
         May be 🤔
       </div>

@@ -87,6 +87,7 @@ useEffect(() => {
       setAppRating([]);
       setAppCommentList([]);
       setCurrentStatus('');
+      setAppInfo(singleProduct[0]);
     }
   }
 }, [singleProduct, user]);

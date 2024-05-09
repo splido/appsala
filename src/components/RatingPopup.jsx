@@ -4,7 +4,7 @@ import { useDispatch,useSelector } from "react-redux";
 import StarRating from './StarRating';
 function RatingPopup({info,setRatingPopup, savedApp}) {
   const [ID, setID] = useState("")
-  
+  console.log(info)
   const authToken = localStorage.getItem('token')
   const apiUrl = `https://appsala-backend.netlify.app/.netlify/functions/index/rating/${ID}`; 
   // const [rating, setRating] = useState(0);

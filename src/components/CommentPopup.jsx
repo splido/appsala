@@ -14,7 +14,7 @@ function CommentPopup({ info, savedApp }) {
   const apiUrl = `https://appsala-backend.netlify.app/.netlify/functions/index/comment/${ID}`;
   const dispatch = useDispatch();
   const userId = localStorage.getItem("userId");
-
+// console.log(info)
   useEffect(() => { 
 
     if(info?._id){
@@ -27,7 +27,7 @@ function CommentPopup({ info, savedApp }) {
       setComments(currentComments)
     }
   
-  }, [info, setID, savedApp,savedComments, currentComments]);
+  }, [info,setID, savedApp,savedComments, currentComments]);
 
   const handleChange = (e) => {
     setComment(e.target.value);

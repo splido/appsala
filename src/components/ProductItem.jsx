@@ -91,9 +91,9 @@ function ProductItem({product}) {
                 if (appId === product._id) {
                   // console.log('following', appId);
                   setIsFollowing(true)
-                 setAppRating(user.products.data.following_app.find((app)=> app._id === product._id).subscription?.user_ratings[0]?.rating)
+                 setAppRating(user.products.data.following_app.find((app)=> app._id === product._id)?.subscription?.user_ratings[0]?.rating)
                  setAppCommentList(user.products.data.following_app.find((app)=> app._id === product._id).subscription.comment)
-                 setAppInfo(user.products.data.following_app.find((app)=> app._id === product._id).subscription.comment)
+                 setAppInfo(user.products.data.following_app.find((app)=> app._id === product._id))
                 setCurrentStatus(user.products?.data?.following_app?.find((app)=> app?._id === product?._id)?.status)
                 } 
               });
@@ -103,7 +103,7 @@ function ProductItem({product}) {
               setIsSaved(false)
              setAppRating([])
              setAppCommentList([])
-            //  setAppInfo()
+             setAppInfo(product)
             setCurrentStatus('')
             }
             }             
@@ -116,7 +116,7 @@ function ProductItem({product}) {
             setCurrentStatus('')
             }
 
-      }, []);
+      }, [user?.products?.data?.following_app,user?.products?.data?.saved]);
 //   }, [ user?.products?.data?.following_app, product._id, auth.isAuthenticated, product, setIsFollowing,setAppRating, setAppCommentList, setAppInfo, setCurrentStatus]
 
 const average_calculator = (rating) =>  {
@@ -223,7 +223,7 @@ const average_calculator = (rating) =>  {
                     Do you wish to use {product.name}?
                 </p>
                 {
-                    isFollowing || isSaved ? <ReactionComponent currentStatus={currentStatus} product={product}/> : <ReactionComponent isDisabled={isDisabled}/>
+                    isFollowing || isSaved ? <ReactionComponent currentStatus={currentStatus} product={product}/> : <ReactionComponent isDisabled={false}  product={product}/>
                 }
                 {/* // <ReactionComponent currentStatus={currentStatus}/> */}
             </div>
