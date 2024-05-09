@@ -28,7 +28,7 @@ function ProfileProductsList({ userApps, id, savedApp }) {
   return (
     <>
       {userApps.map((info) => (
-        <ProfileProductItem info={info} id={info._id} key={info._id} savedApp={savedApp} />
+        <ProfileProductItem info={info} id={info._id} key={info._id} savedApp={savedApp}/>
       ))}
     </>
   );

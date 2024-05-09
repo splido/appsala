@@ -42,18 +42,11 @@ function RatingPopup({info,setRatingPopup, savedApp}) {
   const userId = localStorage.getItem("userId");
 const dispatch = useDispatch();
   useEffect(() => { 
-
-    // if( info?.obj_id?._id){
-    //   setID(info?.obj_id?._id)
-    //  }else{
-    //   setID(info?._id)
-    //  }
     setID(info?._id)
     setSelectedRatings(currentRatings)
 
   }, [
-    info?.obj_id?._id,
-    info?._id,
+    info?._id
   ]);
 
   function handleStarClick(aspect, value) {

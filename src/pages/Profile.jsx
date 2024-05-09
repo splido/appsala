@@ -29,28 +29,23 @@ const [followingProducts, setFollowingProducts] = useState([])
   const id = localStorage.getItem('userId')
   const dispatch = useDispatch();
   const navigate = useNavigate()
+  const [savedProducts, setSavedProducts] = useState([])
+  const [savedApp, setSavedApp] = useState(false)
   
   useEffect(() => {
-    if (currentUser?.products?.data?.following_app) {
-      
-      // If currentUser has data, set userApps and stop loading
+    if (currentUser?.products?.data?.following_app && products?.data) {
       const followingProductIds = currentUser.products.data.following_app.map(item => item._id);
       setFollowingProducts(products.data.filter(product => followingProductIds.includes(product._id)))
-      // console.log(currentUser?.products?.data?.following_app)
-      // setUserApps(followingProducts);
-      // setSavedProducts(products?.data.filter((id) => id === currentUser.products.data.saved.forEach(id).obj_id))
       const savedProductIds = currentUser.products.data.saved.map(item => item._id);
       const filteredProducts = products.data.filter(product => savedProductIds.includes(product._id));
       setSavedProducts(filteredProducts);
-
-      // console.log(savedProducts)
     }
   }, [currentUser, products]);
 
   useEffect(() => {
-    // console.log(followingProducts)
-    setUserApps(followingProducts);
-  }, [followingProducts]);
+    // Update userApps based on savedApp state
+    setUserApps(savedApp ? savedProducts : followingProducts);
+  }, [savedApp, followingProducts, savedProducts]);
 
   const [sortFilter, setSortFilter] = useState(false);
   
@@ -61,11 +56,9 @@ const [followingProducts, setFollowingProducts] = useState([])
   const [sortList, showSortList] = useState(false);
   const [user, setUser] = useState(currentUser.products?.data)
   const [searchVal, setSearchVal] = useState('')
-  const [savedApp, setSavedApp] = useState(false)
   const [selectedFilter, setSelectedFilter] = useState('All');
   const [selectedDropdownValue, setSelectedDropdownValue] = useState('option1');
   const [sortText, setSortText] = useState('Sort by');
-  const [savedProducts, setSavedProducts] = useState([])
   // console.log(sortFilter, sortOrder)
  
   

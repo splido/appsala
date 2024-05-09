@@ -7,10 +7,13 @@ import RatingPopup from './RatingPopup'
 import StarRating from './StarRating'
 import StatusPopup from './StatusPopup'
 import CommentPopup from './CommentPopup'
-// import { useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { useSelector } from 'react-redux';
+import { updateUserData } from "../Reducers/userReducer";
+
 
 function ProfileProductItem({info,savedApp}) {
+  const dispatch = useDispatch();
   const [saved, setSaved] = useState()
   const [followingApp, setFollowingApp] = useState()
   const currentUser = useSelector((state) => state?.user?.products?.data?.saved);
@@ -45,7 +48,9 @@ useEffect(() => {
  console.log(followingApp)
 }
 
-}, []);
+}, [info,currentUser,currentUserApps]);
+
+
 
 
 const [showOverlay, setShowOverlay] = useState(false);
@@ -177,14 +182,19 @@ const handleDropdownChange = async(e) => {
             currentStatus = "No, i don't 😑"}
           
 
-if(savedApp){
-  var applicationID = info?._id
-}else{
-  applicationID = followingApp[0]?._id
-}
+// if(savedApp){
+//   var applicationID = info?._id
+// }
+// else if(followingApp[0]?._id){
+//   applicationID = followingApp[0]?._id
+// }else{
+//   applicationID = ''
+// }
+
+var applicationID = info?._id
   const apiUrl =`https://appsala-backend.netlify.app/.netlify/functions/index/update-status/${applicationID}`
-  console.log(applicationID)
- 
+  // console.log(applicationID)
+ console.log(apiUrl)
   const authToken = localStorage.getItem("token");
   const requestOptions = {
     method: "PUT",
@@ -200,7 +210,7 @@ if(savedApp){
     const response = await fetch(apiUrl, requestOptions);
     const data = await response.json();
     console.log("Response data:", data);
- 
+    dispatch(updateUserData(id))    
   } catch (error) {
     console.error("Error:", error);
   }
