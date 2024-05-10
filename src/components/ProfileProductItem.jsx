@@ -13,6 +13,7 @@ import { updateUserData } from "../Reducers/userReducer";
 
 
 function ProfileProductItem({info,savedApp}) {
+  // console.log(info)
   const dispatch = useDispatch();
   const [saved, setSaved] = useState()
   const [followingApp, setFollowingApp] = useState()
@@ -45,7 +46,6 @@ useEffect(() => {
  var filteredProduct = currentUserApps?.filter((product) => product?._id === info?._id)[0];
  setFollowingApp(filteredProduct)
  setSelectedDropdownValue(selector(filteredProduct?.status));
- console.log(followingApp)
 }
 
 }, [info,currentUser,currentUserApps]);

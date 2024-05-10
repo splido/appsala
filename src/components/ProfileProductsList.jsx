@@ -6,7 +6,7 @@ import Spinner from './Spinner';
 function ProfileProductsList({ userApps, id, savedApp }) {
   const loading = useSelector((state) => state.user.loading);
   const [showSpinner, setShowSpinner] = useState(true);
-
+// console.log(userApps)
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowSpinner(false);

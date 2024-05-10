@@ -79,50 +79,95 @@ const [followingProducts, setFollowingProducts] = useState([])
     setActiveComponent(component);
   };
   const calculateAverageRating = (appData) => {
-    const  rating  = appData.rating;
-    // Calculate the average rating based on the individual ratings
-    const totalRatings = Object.values(rating).reduce((sum, value) => sum + value, 0);
-    const numberOfRatings = Object.keys(rating).length;
-    const averageRating = totalRatings / numberOfRatings;
-    return averageRating;
+    
+    const  rating  = appData || {
+      Company:0,
+      Features: 0,
+      Performance:0,
+      Support:0,
+      Usability:0,
+      Value:0
+    }
+    // console.log(rating)
+    if(rating){
+      const totalRatings = Object.values(rating).reduce((sum, value) => sum + value, 0)
+      const numberOfRatings = Object.keys(rating).length;
+      const averageRating = totalRatings / numberOfRatings;
+      return averageRating;
+    }
+
   };
 
   const handleSortToggle = (type) => {
+    const filterFollowed = currentUser?.products?.data?.following_app
     setShowOverlay(false)
     if (type === 'latest') {
       setSortText('Latest');
-      var sortedItems = [...userApps].sort((a, b) => {
+      var sortedItems = [...filterFollowed].sort((a, b) => {
         var dateA = new Date(a.subscription.date);
         var dateB = new Date(b.subscription.date);
         return dateA - dateB;
     })
+    const sortedItemsIds = sortedItems.map(app => app._id);
+    sortedItems = userApps.filter(app => sortedItemsIds.includes(app._id));
+    console.log(sortedItems)
     setUserApps(sortedItems);
     } else if (type === 'oldest') {
       setSortText('Oldest');
-       sortedItems = [...userApps].sort((a, b) => {  
+       sortedItems = [...filterFollowed].sort((a, b) => {  
         var dateA = new Date(a.subscription.date);
         var dateB = new Date(b.subscription.date);
         return dateB - dateA;
     })
+    
+    const sortedItemsIds = sortedItems.map(app => app._id);
+    sortedItems = userApps.filter(app => sortedItemsIds.includes(app._id));
+    console.log(sortedItems)
     setUserApps(sortedItems);
    
   }
   if (type === 'highest') {
     setSortText('Highest');
-    const sortedItems = [...userApps].sort((a, b) => {
-      const averageRatingA = calculateAverageRating(a.obj_id);
-      const averageRatingB = calculateAverageRating(b.obj_id);
+    var sortedItems = [...filterFollowed].sort((a, b) => {
+      const averageRatingA = calculateAverageRating(a.subscription.user_ratings[0]?.rating);
+      const averageRatingB = calculateAverageRating(b.subscription.user_ratings[0]?.rating);
       return averageRatingB - averageRatingA;
     });
-    setUserApps(sortedItems);
+    const sortedItemsIds = new Set(sortedItems.map(app => app._id)); // Convert to a Set for faster lookup
+    const filteredUserApps = [];
+    
+    for (const id of sortedItemsIds) {
+      for (const app of userApps) {
+          if (app._id === id) {
+              filteredUserApps.push(app);
+              break; 
+          }
+      }
+  }
+    setUserApps(filteredUserApps);
+    
   } if (type === 'lowest') {
     setSortText('Lowest');
-    const sortedItems = [...userApps].sort((a, b) => {
-      const averageRatingA = calculateAverageRating(a.obj_id);
-      const averageRatingB = calculateAverageRating(b.obj_id);
+    var sortedItems = [...filterFollowed].sort((a, b) => {
+      const averageRatingA = calculateAverageRating(a.subscription.user_ratings[0]?.rating);
+      const averageRatingB = calculateAverageRating(b.subscription.user_ratings[0]?.rating);
       return averageRatingA - averageRatingB;
     });
-    setUserApps(sortedItems);
+    
+    const sortedItemsIds = new Set(sortedItems.map(app => app._id)); // Convert to a Set for faster lookup
+    const filteredUserApps = [];
+    
+    for (const id of sortedItemsIds) {
+      for (const app of userApps) {
+          if (app._id === id) {
+              filteredUserApps.push(app);
+              break; 
+          }
+      }
+  }
+    setUserApps(filteredUserApps);
+    
+    
   }
   setSortFilter(true)
 }
@@ -136,29 +181,33 @@ const AllUsers = () =>{
 }
 
 const handleFilterClick = (filter) => {
-  setSavedApp(false)
+  setSavedApp(false);
   if (filter === 'All') {
     AllUsers();
   } 
-  if (filter === 'Comments'){
-    filterComments()
-  } if (filter === 'Status'){
-    filterStatus()
+  else if (filter === 'Comments') {
+    filterComments();
+  } 
+  else if (filter === 'Status') {
+    filterStatus();
   }
-  if (filter === 'Ratings'){
-    filterRatings()
-  } if (filter === 'Saved'){
-    filterSaved()
-  }
+  else if (filter === 'Ratings') {
+    filterRatings();
+  } 
+  else if (filter === 'Saved') {
+    filterSaved();
+  } 
   else {
     setSelectedFilter(filter); 
   }
-  setSortText('Sort by')
+  setSortText('Sort by');
 };
 
 const filterComments = () =>{
- const filterCommented = userApps?.filter((i) => (i.subscription.comment.length > 0))
- setUserApps(filterCommented)
+ const filterCommented = currentUser?.products?.data?.following_app?.filter((i) => (i.subscription.comment.length > 0))
+ const filterCommentedIds = filterCommented.map(app => app._id);
+ const commentedApps = userApps.filter(app => filterCommentedIds.includes(app._id));
+ setUserApps(commentedApps)
  setSelectedFilter('Comments')
 }
 
@@ -170,26 +219,39 @@ const filterSaved = () =>{
  
 const filterRatings = () =>{
   setSavedApp(false)
-  const filterRated = userApps?.filter((i) => (i.subscription?.user_ratings[0]?.rating ))
-  setUserApps(filterRated)
+  const filterRated = currentUser?.products?.data?.following_app?.filter((i) => (i.subscription?.user_ratings[0]?.rating ))
+  const filterRatedIds = filterRated.map(app => app._id);
+  const ratedApps = userApps.filter(app => filterRatedIds.includes(app._id));
+  setUserApps(ratedApps)
   setSelectedFilter('Ratings')
  }
 
 const filterStatus = () =>{
   if (selectedDropdownValue === 'option1'){
-    const filterStatus = user?.following_app?.filter((i) => (i.status === 'I am using it 👍'))
-    setUserApps(filterStatus)
+    const filterStatus = currentUser?.products?.data?.following_app?.filter((i) => (i.status === 'I am using it 👍'))
+    console.log(filterStatus)
+    const filterStatusIds = filterStatus.map(app => app._id);
+  const statusApps = userApps.filter(app => filterStatusIds.includes(app._id));
+    setUserApps(statusApps)
   } if (selectedDropdownValue === 'option2'){
-    const filterStatus = user?.following_app?.filter((i) => (i.status === 'Yes, i want to 🤩'))
-    setUserApps(filterStatus)
+    const filterStatus = currentUser?.products?.data?.following_app?.filter((i) => (i.status === 'Yes, i want to 🤩'))
+    const filterStatusIds = filterStatus.map(app => app._id);
+    const statusApps = userApps.filter(app => filterStatusIds.includes(app._id));
+      setUserApps(statusApps)
   }
   if (selectedDropdownValue === 'option3'){
-    const filterStatus = user?.following_app?.filter((i) => (i.status === 'Maybe 🤔'))
-    setUserApps(filterStatus)
+    const filterStatus = currentUser?.products?.data?.following_app?.filter((i) => (i.status === 'Maybe 🤔'))
+    console.log(filterStatus)
+    const filterStatusIds = filterStatus.map(app => app._id);
+    const statusApps = userApps.filter(app => filterStatusIds.includes(app._id));
+      setUserApps(statusApps)
   }
   if (selectedDropdownValue === 'option4'){
-    const filterStatus = user?.following_app?.filter((i) => (i.status === "No, I don't 😐"))
-    setUserApps(filterStatus)
+    const filterStatus = currentUser?.products?.data?.following_app?.filter((i) => (i.status === "No, i don't 😑"))
+    console.log(filterStatus)
+    const filterStatusIds = filterStatus.map(app => app._id);
+    const statusApps = userApps.filter(app => filterStatusIds.includes(app._id));
+      setUserApps(statusApps)
   }
   
  
