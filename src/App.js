@@ -13,7 +13,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchUser } from './Reducers/userReducer'
 import { fetchProducts, selectProducts } from './Reducers/ProductReducer'
 import BlogPost from "./pages/BlogPost";
-
+import AdminRoutes from "./pages/Admin/AdminRoutes";
+import { Toaster } from "react-hot-toast";
 function App() {
   const products = useSelector(selectProducts);
   const id = localStorage.getItem('userId')
@@ -31,8 +32,6 @@ function App() {
   //   setProducts(data)
    
   // }
-
-
   return (
   <>
    
@@ -51,9 +50,13 @@ function App() {
     <Route path="/form" element={<Addcompany/>} />
     </Route>
     <Route path="/:slug" element={<Product products={products}/>} />
+    <Route path="/admin/*" element={<AdminRoutes/>}/>
     </Routes>
+    
     <Footer/>  
     </Router>
+    
+    <Toaster />
   
   </>
   );

@@ -90,9 +90,9 @@ const filterData= () =>{
 const location = useLocation();
 
 // Do not render the navbar on the "Dashboard" page
-const isProfileRoute = location.pathname === '/profile' || location.pathname.startsWith('/profile/');
+const isDisplayNone = location.pathname === '/profile' || location.pathname.startsWith('/profile/') || location.pathname === '/admin' || location.pathname.startsWith('/admin/');
 
-if (isProfileRoute) {
+if (isDisplayNone) {
   return null;
 }
   return (

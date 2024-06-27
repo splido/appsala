@@ -1,10 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300&display=swap');
-
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities; */
 body{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: 'Manrope', sans-serif;
+    background-color: #ffffff;
 }
 .container{
     max-width: 1140px;
@@ -827,6 +830,8 @@ footer{
     border: 1px solid #F11A7B;
     width: 100px;
     margin-left: 10px;
+    display: inline-block;
+    white-space: nowrap;
   }
 
   .button-light{
@@ -1691,4 +1696,194 @@ input[type='checkbox']:checked {
     justify-content: space-between;
     width: 90%;
     margin-top: 1rem;
+}
+
+/********** Admin Styles ****************/
+
+.admin-dropdown-menu{
+    position: absolute;
+    top: 3rem;
+    list-style: none;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Add drop shadow */
+    border-radius: 10px;
+    padding: 1px;
+    display: none;
+}
+
+.admin-dropdown-menu li{
+    padding: 7px 1.7rem;
+}
+
+.admin-cards{
+    margin: 2rem 0;
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    grid-gap: 1.5rem;
+}
+
+.admin-dropdown-menu li:hover{
+    background-color: #F5F8FF;
+    cursor: pointer;
+}
+.admin-nav .search{
+    margin-top: 10px;
+}
+.admin-nav{
+    padding: 7px 0;
+}
+.admin-nav .nav-buttons{
+    margin-right: 10px;
+}
+.admin-card{
+    border: 1px solid #F11A7B;
+    padding: 1rem;
+    border-radius: 10px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.admin-card .card-button-div{
+    position: absolute;
+    bottom: 0;
+    margin-bottom: 1rem;
+}
+
+.admin-card-heading-para{
+    margin-bottom: 3.5rem;
+}
+.admin-card-heading-para{
+    text-align: center;
+}
+.admin-create-application
+{
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.admin-create-category,
+.admin-login-page{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+.create-category,
+.create-application,
+.admin-login-form{
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Add drop shadow */
+    padding: 2rem;
+    border-radius: 10px;
+    max-width: 42rem;
+    width: 100%;
+    }
+.create-category h2,
+.create-application h2,
+.admin-login-form  h2{
+    color: #757575;
+}
+
+.create-category form,
+.create-application form,
+.admin-login-form form{
+    margin: 10px 2rem;
+}
+
+.create-category form input,
+.create-application form input,
+.admin-login-form form input{
+    padding: 10px;
+}
+
+.create-category form textarea,
+.create-application form textarea{
+    resize: none;
+    height: 200px;
+    background-color: #F9F9F9;
+    border: none;
+    padding: 10px;
+}
+.create-category form textarea::placeholder,
+.create-category form input::placeholder,
+.create-application form textarea::placeholder,
+.create-application form input::placeholder,
+.admin-login-form form input::placeholder{
+    font-family:  'Manrope', sans-serif;
+    color: #454545;
+}
+
+.create-category form label,
+.create-application form label,
+.admin-login-form form label{
+   font-size: 14px;
+}
+
+.create-category div,
+.create-application div,
+.admin-login-form div{
+    display: flex;
+    flex-direction: column;
+}
+
+.create-category .button-div,
+.create-application .button-div{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.create-category .button-div .button,
+.admin-login-form .button{
+    width: 100%;
+    margin-left: 0;
+}
+.admin-login-form .button{
+    margin-top: 1rem;
+}
+
+.create-application .button{
+    width: 80%;
+    margin: auto;
+    margin-top: 2rem;
+}
+
+.create-application .button-light{
+    margin-top: 1rem;
+}
+
+.admin-rating-component{
+    display: grid !important;
+    grid-template-columns: repeat(2,1fr);
+    grid-gap: 1rem;
+    margin-left: 5rem;
+}
+
+.admin-rating-stars{
+    flex-direction: row !important;
+    margin-bottom: 10px;
+}
+
+.admin-rating-stars>*{
+    margin-right: 3px;
+}
+
+.admin-delete-cross{
+   width: 10% !important;
+   position: absolute;
+   right: 0;
+   top: -2rem;
+   margin-top: 0 !important;
+}
+
+.text-gray-400{
+    color: #757575;
+}
+
+.text-yellow-500{
+    color: darkorange;
 }

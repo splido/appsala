@@ -8,10 +8,11 @@ import { BiLogoGithub } from 'react-icons/bi';
 
 function Footer() {
   const location = useLocation();
-  const isProfileRoute = location.pathname === '/profile' || location.pathname.startsWith('/profile/');
-  if (isProfileRoute) {
+  const isDisplayNone = location.pathname === '/profile' || location.pathname.startsWith('/profile/') || location.pathname === '/admin' || location.pathname.startsWith('/admin/');
+
+if (isDisplayNone) {
   return null;
-  }
+}
   return (
     <footer>
       <div className='footer-first'>
