@@ -20,7 +20,7 @@ const useCreateCategory = () => {
             console.log(data)
            // console.warn(data)
             if (data.status === false) {
-                toast.error('Error:',  data.message)
+                toast.error('Error:',  data.data)
                 
             }else{
                 toast.success("Category Created")

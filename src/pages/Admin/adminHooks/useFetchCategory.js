@@ -5,7 +5,7 @@ import { useEffect, useState } from "react"
 const useFetchCategory = () => {
 
     const [loading, setLoading] = useState(false)
-    const [categories, setCategories] = useState()
+    const [categories, setCategories] = useState([])
 
     useEffect(() => {
         const getCategoriesList = async () => {
@@ -15,7 +15,8 @@ const useFetchCategory = () => {
                 const res = await fetch("https://appsala-backend.netlify.app/.netlify/functions/index/getcategories");
                 const result = await res.json()
 
-                setCategories(result.data)
+                console.log(result.message)
+                setCategories(result.message)
                 //console.warn(result.data)
             } catch (err) {
                 console.error(err)
@@ -27,7 +28,7 @@ const useFetchCategory = () => {
     }, [])
 
 
-    return { categories, loading }
+    return { loading , categories}
 
 }
 

@@ -29,7 +29,7 @@ const [articles, setArticles] = useState([])
           categories(*),
           post_type(*),
           publication(*)
-          `).eq('status', 3).eq('publication_id', 2)
+          `).eq('status', 3).eq('publication_id', 2)
     if (error) {
     console.log(error);
     } else {

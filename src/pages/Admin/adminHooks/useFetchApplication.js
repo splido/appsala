@@ -12,7 +12,7 @@ const useFetchApplication = () => {
             try {
                 const res = await fetch("https://appsala-backend.netlify.app/.netlify/functions/index/products");
                 const result = await res.json();
-                console.warn(result)
+                
                 setData(result.data); // Assuming result contains the data you need
             } catch (err) {
                 console.error("Fetch error:", err.message);
