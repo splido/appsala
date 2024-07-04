@@ -16,15 +16,10 @@ const CreateCategoryDropDown = ({ categories }) => {
     parentCategory: ''
   });
 
-  const [subCategoryFormData, setSubCategoryFormData] = useState({
-    name: '',
-    slug: '',
-    description: '',
-    image: { url: '', public_id: '' }
-  });
+  
 
-  const [showSubCategoryForm, setShowSubCategoryForm] = useState(false);
-  const [subCategoryButton, setSubCategoryButton] = useState(true);
+ 
+ 
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,33 +29,16 @@ const CreateCategoryDropDown = ({ categories }) => {
     });
   };
 
-  const handleSubCategoryChange = (e) => {
-    const { name, value } = e.target;
-    setSubCategoryFormData({
-      ...subCategoryFormData,
-      [name]: value
-    });
-  };
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     await createCategory(formData);
     // Handle form submission, e.g., send data to an API
   };
 
-  const handleAddSubCategory = () => {
-    setShowSubCategoryForm(true);
-  };
+ 
 
-  const handleSubCategorySubmit = (e) => {
-    e.preventDefault(); // Prevent the default form submission behavior
-
-    setFormData({
-      ...formData,
-      subCategory_ids: [...formData.subCategory_ids, subCategoryFormData]
-    });
-    setSubCategoryButton(false);
-  };
+  
 
 
   const handleCategorySelect = (categoryId)=>{
@@ -132,72 +110,7 @@ const CreateCategoryDropDown = ({ categories }) => {
           />
         </div>
 
-        {showSubCategoryForm && (
-          <div>
-            <form>
-              <div>
-                <button
-                  type="button"
-                  onClick={() => { setShowSubCategoryForm(false); }}
-                  className="button"
-                >
-                  &#x2716;
-                </button>
-                <h3>Add Subcategory</h3>
-
-                <label htmlFor="subName">SubCategory name</label>
-                <input
-                  type="text"
-                  id="subName"
-                  name="name"
-                  value={subCategoryFormData.name}
-                  onChange={handleSubCategoryChange}
-                  placeholder="Enter subcategory name"
-                  required
-                />
-
-                <div className="mb-4">
-                  <label htmlFor="subSlug">Slug:</label>
-                  <input
-                    type="text"
-                    id="subSlug"
-                    name="slug"
-                    value={subCategoryFormData.slug}
-                    onChange={handleSubCategoryChange}
-                    placeholder="Enter category slug"
-                    required
-                  />
-                </div>
-
-                <div className="mb-4">
-                  <label htmlFor="subDescription">Subcategory Description:</label>
-                  <textarea
-                    id="subDescription"
-                    name="description"
-                    value={subCategoryFormData.description}
-                    onChange={handleSubCategoryChange}
-                    placeholder="Enter subcategory description"
-                    required
-                  />
-                </div>
-              </div>
-
-              {subCategoryButton ? (
-                <button
-                  type="submit"
-                  onClick={handleSubCategorySubmit}
-                  className="button"
-                >
-                  {!showSubCategoryForm ? "Add Subcategory" : "Create Subcategory"}
-                </button>
-              ) : (
-                <div>
-                  Created! Now you can submit Category
-                </div>
-              )}
-            </form>
-          </div>
-        )}
+       
 
         <div className="button-div">
           <button
@@ -207,15 +120,7 @@ const CreateCategoryDropDown = ({ categories }) => {
             {loading ? <Spinner /> : "Submit"}
           </button>
 
-          {!showSubCategoryForm && (
-            <button
-              type="button"
-              onClick={handleAddSubCategory}
-              className="button"
-            >
-              Add Subcategory
-            </button>
-          )}
+          
         </div>
       </form>
     </div>
