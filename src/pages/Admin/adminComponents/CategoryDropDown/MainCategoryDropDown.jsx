@@ -19,14 +19,14 @@ function MainCategoryDropDown({ onCategorySelect }) {
         <Spinner />
       ) : (
         <div>
-          <label htmlFor="main-category">Select Main Category:</label>
+          <label htmlFor="main-category">Select Type Of Category:</label>
           <select
             id="main-category"
             value={selectedCategory}
             onChange={handleCategoryChange}
             required
           >
-            <option value="">Please select a category</option>
+            <option value="">Main Category</option>
             {categories.map((category) => (
               <option key={category._id} value={category._id}>
                 {category.name}

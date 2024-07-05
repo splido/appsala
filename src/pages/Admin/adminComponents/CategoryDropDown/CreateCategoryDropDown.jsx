@@ -7,13 +7,14 @@ const CreateCategoryDropDown = ({ categories }) => {
   const { loading, createCategory } = useCreateCategory();
 
   const [formData, setFormData] = useState({
-    type: 'main',
+  
     name: '',
     slug: '',
     subCategory_ids: [],
     description: '',
     image: { url: '', public_id: '' },
-    parentCategory: ''
+    
+    parentCategoryID : "main"
   });
 
   
@@ -44,15 +45,13 @@ const CreateCategoryDropDown = ({ categories }) => {
   const handleCategorySelect = (categoryId)=>{
     setFormData({
       ...formData,
-      parentCategoryID : categoryId
+      parentCategoryID :   categoryId
     })
   }
 
   return (
     <div>
-      <form onSubmit={handleSubmit}>
-      
-        
+      <form onSubmit={handleSubmit}>       
 
         <div>
           <label htmlFor="name">Name:</label>
@@ -81,22 +80,9 @@ const CreateCategoryDropDown = ({ categories }) => {
         </div>
 
 
-        <div>
-          <label htmlFor="type">Type of Category:</label>
-          <select
-            id="type"
-            name="type"
-            value={formData.type}
-            onChange={handleChange}
-          >
-            <option value="main">Main Category</option>
-            <option value="sub">Subcategory</option>
-          </select>
-        </div>
-
-        {formData.type === 'sub' && (
+      
           <MainCategoryDropDown  onCategorySelect={handleCategorySelect}/>
-        )}
+       
 
         <div className="mb-4">
           <label htmlFor="description">Description:</label>
