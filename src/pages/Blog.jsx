@@ -2,9 +2,7 @@ import star from '../assets/img/star.png'
 import blogImage from '../assets/img/blog-img.png'
 import author from '../assets/img/author.png'
 import man from '../assets/img/man.png' 
-import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-import {supabase} from '../config/supabase.js'
+import { useEffect } from 'react'
 import BlogCard from '../components/BlogCard'
 import { fetchBlogs, selectBlogs, BlogsError, BlogsLoading } from '../Reducers/BlogReducer'
 import {  fetchProducts, selectProducts } from '../Reducers/ProductReducer'
@@ -23,43 +21,20 @@ function Blog() {
 
 
   useEffect(()=>{
-    const apiUrl = 'https://appsala-backend.netlify.app/.netlify/functions/index/products'
-    // const fetchData = async() =>{
-    //   const response = await fetch(apiUrl)
-    //   var data = await response.json()
-    //   const product_list =  data?.data?.slice(0,3)
-    //   setProducts(product_list)
-    // }
-   
-    //   fetchData()
+try {
+  if(blogs.length === 0){
+    dispatch(fetchBlogs())
+  }
+  if(!products){
+    dispatch(fetchProducts())
+  }
+} catch (error) {
+  console.log(error);
+}
 
-    const fetchData =  async()=>{
-      let { data, error } = await supabase
-      .from('articles')
-            .select(`
-          *,
-          articlestatus(*),
-          authors(*),
-          categories(*),
-          post_type(*),
-          publication(*)
-          `).eq('status', 3).eq('publication_id', 2)
-    if (error) {
-    console.log(error);
-    } else {
-    setArticles(data);
-    }
-    }
+},[dispatch] )
 
-    fetch(apiUrl)
-    .then((response) => response.json())
-    .then((data) => {
-      const product_list =  data?.data?.slice(0,3)
-      setProducts(product_list)
-    });
-    fetchData()
-     
-    },[] )
+    
   return (
     <>
     
