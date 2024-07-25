@@ -1,5 +1,5 @@
 import React from 'react'
-import CategoryDropDown from './adminComponents/CategoryDropDown/CategoryDropDown'
+import CategoryDropDown from './adminComponents/CategoryDropDown/CreateCategoryDropDown'
 
 function CreateCategory() {
   return (
