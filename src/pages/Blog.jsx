@@ -5,47 +5,36 @@ import man from '../assets/img/man.png'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {supabase} from '../config/supabase.js'
+import BlogCard from '../components/BlogCard'
+import { fetchBlogs, selectBlogs, BlogsError, BlogsLoading } from '../Reducers/BlogReducer'
+import {  fetchProducts, selectProducts } from '../Reducers/ProductReducer'
+import { useDispatch, useSelector } from 'react-redux';
+import Spinner from '../components/Spinner'
+
+
 function Blog() {
-const [products, setProducts] = useState([])
-const [articles, setArticles] = useState([])
+  const blogs = useSelector(selectBlogs);
+  const loading = useSelector(BlogsLoading);
+  const error = useSelector(BlogsError);
+  const products = useSelector(selectProducts);
+  const productLoading = useSelector((state) => state.products.loading);
+  const productError = useSelector((state) => state.products.error);
+  const dispatch = useDispatch();
+
+
   useEffect(()=>{
-    const apiUrl = 'https://appsala-backend.netlify.app/.netlify/functions/index/products'
-    // const fetchData = async() =>{
-    //   const response = await fetch(apiUrl)
-    //   var data = await response.json()
-    //   const product_list =  data?.data?.slice(0,3)
-    //   setProducts(product_list)
-    // }
-   
-    //   fetchData()
+try {
+  if(blogs.length === 0){
+    dispatch(fetchBlogs())
+  }
+  if(!products){
+    dispatch(fetchProducts())
+  }
+} catch (error) {
+  console.log(error);
+}
 
-    const fetchData =  async()=>{
-      let { data, error } = await supabase
-      .from('articles')
-            .select(`
-          *,
-          articlestatus(*),
-          authors(*),
-          categories(*),
-          post_type(*),
-          publication(*)
-          `).eq('status', 3).eq('publication_id', 2)
-    if (error) {
-    console.log(error);
-    } else {
-    setArticles(data);
-    }
-    }
-
-    fetch(apiUrl)
-    .then((response) => response.json())
-    .then((data) => {
-      const product_list =  data?.data?.slice(0,3)
-      setProducts(product_list)
-    });
-    fetchData()
-     
-    },[] )
+},[dispatch] )
   return (
     <>
     
@@ -74,9 +63,9 @@ const [articles, setArticles] = useState([])
           <h1>Top App Reviews</h1>
           
           {  
-
           
-            products.map((product, index)=>{
+          productLoading ? <Spinner/> : productError ?  <p>{productError}</p> :
+            products && products.slice(0,3).map((product, index)=>{
               return(
                
                 <div className="blog-hero-card" key={index}>
@@ -111,29 +100,13 @@ const [articles, setArticles] = useState([])
 <section className="articles container">
 <h3 className="latest">Latest Articles</h3>
 <div className="blogs-grid">
+
   
   {
-    articles.map((article, index)=>{
+       loading ? <Spinner/> : error ?  <p>{error}</p> :
+    blogs && blogs.map((blog, index)=>{
       return(
-      
-        <div className="blog-card" key={index}>
-            <Link to={`/blog/${article.url}`}>
-        <img src={`https://res.cloudinary.com/creyo-com/image/upload/v1703682257/appsala/blog/${article.featured_image}`} alt="blog-img"/></Link>
-        <p className="blog-type">{article.post_type.name}</p>
-        <p className="blog-title">{article.title}</p>
-        <p className="blog-desc">{article.seo_description}</p>
-        <div className="author-info">
-            <img  src={author}alt=""/>
-            <div><p className="author-name">{article.authors.name}</p>
-              <div className="flex"><p className="text-light">
-  {new Date(article.date).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })}
-</p>
-                  <p className="text-light time">3 min read</p>
-              </div>
-            </div>
-            
-        </div>
-        </div>
+        <BlogCard blog={blog} key={index}/>    
       )
     })
   }
@@ -149,7 +122,7 @@ const [articles, setArticles] = useState([])
             Our team is willing and ready to do it in a short notice. Just submit the website URL,
              and we will be upto the task in no time!
             </p>
-            <button className="button-light" 
+            <button className="btn-dark btn" 
             style={{height: '30px', width: '120px', padding: '5px'}}
             >Register Now</button>
             </span>

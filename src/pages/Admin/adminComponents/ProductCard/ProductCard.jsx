@@ -31,9 +31,9 @@ function ProductCard({selectedValue}) {
                             <p>{shortDescription(product.shortDescription)}</p>
                             </div>
                             <div className="flex card-button-div">
-                                <button className="button"><MdDelete />Delete</button>
+                                <button className="btn btn-light" style={{marginRight:'10px'}}><MdDelete />Delete</button>
                                 <div></div> {/* Adjust the margin as needed */}
-                                <Link to={`/admin/update-application/${product._id}`}>  <button className="button"><MdModeEdit />Edit</button></Link>
+                                <Link to={`/admin/update-application/${product._id}`}>  <button className="btn btn-light"><MdModeEdit />Edit</button></Link>
                             </div>
                 </div>
             ))) :

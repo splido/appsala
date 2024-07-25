@@ -1,42 +1,33 @@
 import React from 'react'
 import { useEffect,useState } from 'react'
-
+import StarRating from '../components/StarRating'
 function SimilarList({similar}) {
     const [similar_products, setSimilar_products] = useState([])
   useEffect(()=>{
     const similar_products = similar?.slice(0,4)
     setSimilar_products(similar_products)
-   // console.log(similar_products)
   },[similar])
  
   return (
-    <div className="reviews-section">
-    <div className="cards container">
+  <>
         {
             similar_products?.map((product, index)=>(
-                <div className="reviews-card" key={index}>
-                <div>
-                    <img src={product?.logo} alt="" style={{height: '20px'}}/>
-                </div>
-                <div className="details">
+                <div className="flex" key={index}>
+                    <img src={product?.logo} alt="product-image" style={{height: 'auto', width: '70px'}}/>
+            
+                <div className="card-left-div">
         
-                    <p style={{fontSize: '16px'}} >{product?.name}</p>
+                    <p className='dark-text'>{product?.name}</p>
                     <div className="stars">
-                        <i className="fas fa-star" style={{color: "yellow"}}></i>
-                        <i className="fas fa-star" style={{color: "yellow"}}></i>
-                        <i className="fas fa-star" style={{color: "yellow"}}></i>
-                        <i className="fas fa-star" style={{color: "yellow"}}></i>
-                        <i className="fas fa-star"  style={{color: "#D9D9D9"}}></i>
+                       
+                    <StarRating rating={product?.averageRating} isDisabled ={true}/> 
                     </div>
-                    <div className="ratings">
-                        <p>{product?.averageRating}<span>(149 Follows)</span></p>
-                    </div>
+                        <p>{product?.averageRating}</p>
                 </div>
                 </div>
             ))
         }
-    </div>
-    </div>
+  </>
   )
 }
 

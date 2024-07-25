@@ -36,9 +36,9 @@ const Rating = ({ onRatingChange ,ratingData}) => {
     <div>
       <h2>Rating</h2>
       
-      <div  className='admin-rating-component'>
+      <div  className='admin-rating-component flex'>
       {Object.entries(formData).map(([category, rating]) => (
-          <div key={category} >
+          <div key={category}>
           <label htmlFor={category}>{category}:</label>
           <div className='admin-rating-stars'>
             {[...Array(5)].map((_, index) => (

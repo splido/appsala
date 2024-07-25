@@ -1,6 +1,5 @@
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
-import Addcompany from "./components/Addcompany";
 import Home from "./pages/Home";
 import Blog from "./pages/Blog";
 import Product from "./pages/Product";
@@ -19,19 +18,15 @@ function App() {
   const products = useSelector(selectProducts);
   const id = localStorage.getItem('userId')
   const dispatch = useDispatch();
+  
   useEffect(()=>{
-    // fetchData()
-    dispatch(fetchUser(id));
+    if(id){
+      dispatch(fetchUser(id));
+    }
     dispatch(fetchProducts());
   }, [dispatch,id]);
 
-  // const apiUrl = 'https://appsala-backend.netlify.app/.netlify/functions/index/products'
-  // const fetchData = async() =>{
-  //   const response = await fetch(apiUrl)
-  //   const data = await response.json()
-  //   setProducts(data)
-   
-  // }
+
   return (
   <>
    
@@ -45,9 +40,6 @@ function App() {
     <Route path="/profile/:id" element={<PrivateRoute/>} >
     
     <Route path="/profile/:id" element={<Profile/>} />
-    </Route>
-    <Route path="/form" element={<PrivateRoute/>} >
-    <Route path="/form" element={<Addcompany/>} />
     </Route>
     <Route path="/:slug" element={<Product products={products}/>} />
     <Route path="/admin/*" element={<AdminRoutes/>}/>

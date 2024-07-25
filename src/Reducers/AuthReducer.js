@@ -1,11 +1,6 @@
 // src/features/authSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { fetchUser } from './userReducer'; 
-// Async thunk for user authentication
-// export const loginUser = createAsyncThunk('auth/loginUser', async (credentials) => {
-//   const response = await api.post('/login', credentials);
-//   return response.data;
-// });
 const initialState = {
   user: localStorage.getItem('userId') || null,
   token: localStorage.getItem('token') || null,
@@ -29,13 +24,14 @@ export const signupUser = createAsyncThunk('signup', async (body, { rejectWithVa
     if (!res.ok) {
       // Check if the response status is not in the 2xx range
       const errorData = await res.json(); // Assuming your server returns error details as JSON
-      throw new Error(errorData.message); // You can customize this error handling based on your server's response format
+     
+      return rejectWithValue(errorData.data || 'Signup failed'); // You can customize this error handling based on your server's response format
     }
 
     const data = await res.json();
     return data;
   } catch (error) {
-    return rejectWithValue(error.message);
+    return rejectWithValue(error.message || 'An error occurred during signup');
   }
 });
 
@@ -52,13 +48,13 @@ export const loginUser = createAsyncThunk('login', async (body, { rejectWithValu
     if (!res.ok) {
       // Check if the response status is not in the 2xx range
       const errorData = await res.json(); // Assuming your server returns error details as JSON
-      throw new Error(errorData.message); // You can customize this error handling based on your server's response format
+      return rejectWithValue(errorData.data || 'Login failed'); // You can customize this error handling based on your server's response format
     }
 
     const data = await res.json();
     return data;
   } catch (error) {
-    return rejectWithValue(error.message);
+    return rejectWithValue(error.message || 'An error occurred during login');
   }
 });
 
@@ -93,7 +89,7 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.payload || action.error.message;
       })
       .addCase(logoutUser, (state) => {
         state.user = null;
@@ -117,7 +113,7 @@ const authSlice = createSlice({
       })
       .addCase(signupUser.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.payload || action.error.message;
       })
   },
 });

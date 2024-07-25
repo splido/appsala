@@ -57,7 +57,7 @@ const AppPricing = ({ onPricingChange ,AppPricingData}) => {
             <button
               type="button"
               onClick={() => handleRemoveField(index)}
-              className="admin-delete-cross button"
+              className="admin-delete-cross btn btn-light"
             >
               &#x2716;
             
@@ -118,7 +118,7 @@ const AppPricing = ({ onPricingChange ,AppPricingData}) => {
         <div className="flex">
           <button
             type="button"
-            className='button-light'
+            className='btn btn-light'
             onClick={handleAddField}
           >
             Add Package

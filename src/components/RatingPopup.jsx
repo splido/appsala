@@ -1,18 +1,14 @@
 import { useState, useEffect } from 'react';
-import { updateUserData } from "../Reducers/userReducer";
+import { updateUserData,updateUserRatings } from "../Reducers/userReducer";
 import { useDispatch,useSelector } from "react-redux";
 import StarRating from './StarRating';
+import { toast } from 'react-hot-toast';
 function RatingPopup({info,setRatingPopup, savedApp}) {
   const [ID, setID] = useState("")
   console.log(info)
-  const authToken = localStorage.getItem('token')
-  const apiUrl = `https://appsala-backend.netlify.app/.netlify/functions/index/rating/${ID}`; 
-  // const [rating, setRating] = useState(0);
   var currentRatings = useSelector((state) => state.user?.products?.data?.following_app?.find((app)=> app?._id === info?._id)?.subscription?.user_ratings) || []; 
   var savedRatings = useSelector((state) => state.user?.products?.data?.saved?.find((app)=> app?._id === info?._id)?.user_ratings) || [];
-  // var currentRatings = useSelector((state) => state.user?.products?.data?.following_app?.find((app) => app.obj_id._id === info.obj_id._id).subscription?.user_ratings);
 
-  // Check if currentRatings is an empty array and assign a default value if it is
   if(savedApp){
     if (savedApp && Array.isArray(savedRatings) && savedRatings.length > 0 && savedRatings[0]?.rating){
       currentRatings = savedRatings[0]?.rating;
@@ -58,62 +54,53 @@ const dispatch = useDispatch();
   }
 
   const handleSubmit = async (e) => {
+    console.log('sumnit')
     e.preventDefault();
-  
-    const requestOptions = {
-      method: 'POST',
-      headers: {
-        "Authorization": `Bearer ${authToken}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ rating: selectedRatings }),
-    };
-    console.log(requestOptions)
+    const body={
+      Id:ID,
+      ratings: selectedRatings
+    }
     try {
-      const response = await fetch(apiUrl, requestOptions);
-      const data = await response.json();
-      // setSelectedRatings(currentRatings)
-      console.log('Response data:', data);
-      console.log(apiUrl)
-       dispatch(updateUserData(userId))   
+      await dispatch(updateUserRatings(body)).unwrap()
+      toast.success('Rating Updated')
+      await dispatch(updateUserData(userId)).unwrap()   
       // Handle the response data here
     } catch (error) {
-      console.error('Error:', error);
+      toast.error('Error:', error);
       // Handle errors here
     }
   }
   // console.log(info.obj_id.rating)
   return (
-    <div className="rating-popup">
-      <div className="rating-heading">
-        <h3>My Ratings</h3>  
-      <p>Rate the app based on your experience.</p>
-    </div>
-    <div className="line"></div>
+    <div className="rating-component overlay-card">
+      <h2>My Rating ⭐</h2>
+  <p>Rate the app based on your experience</p>
+  <div className="line"></div>
+
     <div className="ratings">
-      <div className='rating-item'>
+      <div className='rating flex'>
         <p>Usability</p><StarRating aspect='Usability' average={info?.obj_id?.rating?.Usability || 0} rating={selectedRatings.Usability} setSelectedRatings={setSelectedRatings} handleStarClick={handleStarClick}/>
       </div>
-      <div className='rating-item'>
+      <div className='rating flex'>
         <p>Performance</p><StarRating aspect='Performance' average={info?.obj_id?.rating?.Perfomance || 0} rating={selectedRatings.Performance} setSelectedRatings={setSelectedRatings} handleStarClick={handleStarClick}/>
       </div>
-      <div className='rating-item'>
+      <div className='rating flex'>
         <p>Features</p><StarRating aspect='Features' average={info?.obj_id?.rating?.Features  || 0} rating={selectedRatings.Features} setSelectedRatings={setSelectedRatings} handleStarClick={handleStarClick}/>
       </div>
-      <div className='rating-item'>
+      <div className='rating flex'>
         <p>Company</p><StarRating aspect='Company' average={info?.obj_id?.rating?.Company || 0} rating={selectedRatings.Company} setSelectedRatings={setSelectedRatings} handleStarClick={handleStarClick}/>
       </div>
-      <div className='rating-item'>
+      <div className='rating flex'>
         <p>Value</p><StarRating aspect='Value' average={info?.obj_id?.rating?.Value || 0} rating={selectedRatings.Value} setSelectedRatings={setSelectedRatings} handleStarClick={handleStarClick}/>
       </div>
-      <div className='rating-item'>
+      <div className='rating flex'>
         <p>Support</p><StarRating aspect='Support' average={info?.obj_id?.rating?.Support || 0} rating={selectedRatings.Support} setSelectedRatings={setSelectedRatings} handleStarClick={handleStarClick}/>
       </div>
     </div>
-    <div className="rating-buttons">
-    <button className="button" onClick={()=> setRatingPopup(false)}>Cancel</button>
-    <button className="button-light" onClick={handleSubmit}>Rate</button>
-    </div>
+    <div className="button-div" style={{alignSelf: "center"}}>
+    <button className="btn btn-light" style={{marginRight: '10px'}} onClick={()=>setRatingPopup(false)}>Cancel</button>
+    <button className="btn btn-dark" onClick={handleSubmit}>Rate</button>
+  </div>
     </div>
   )   
 

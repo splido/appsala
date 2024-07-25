@@ -172,7 +172,8 @@ const CategoryDropDown = () => {
                 <div className="button-div">
                     <button
                         type="submit"
-                        className="button"
+                        className="btn btn-light"
+                        style={{marginRight: '10px'}}
                     >
                     {loading ? <Spinner/> : "Submit"}
                     </button>
@@ -180,7 +181,7 @@ const CategoryDropDown = () => {
                     {!showSubCategoryForm && <button
                         type="button"
                         onClick={handleAddSubCategory}
-                        className="button"
+                        className="btn btn-light"
                     >
                         Add Subcategory
                     </button>}

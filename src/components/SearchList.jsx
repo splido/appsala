@@ -9,7 +9,7 @@ function SeachList({filteredData}) {
              <div className='search-dropdown-content'>
                       {
                       Object?.entries(filteredData).map(([key, value])=>(
-                        <Link style={linkStyle} to={`/${filteredData[key].slug}`}>{filteredData[key].name}</Link>
+                        <Link key={key} style={linkStyle} to={`/${filteredData[key].slug}`}>{filteredData[key].name}</Link>
                       ))
                       
                       }

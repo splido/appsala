@@ -240,8 +240,9 @@ function Form() {
       <h2>App Pricing</h2>
       <AppPricing onPricingChange={handlePricingChange} AppPricingData={applicationData} />
       {loading ? <Spinner/> : (<button
+      style={{width:'100%'}}
         type="submit"
-        className="button"
+        className="btn btn-light"
       >
        {applicationId? "Update" : "Submit"}
       </button>)}

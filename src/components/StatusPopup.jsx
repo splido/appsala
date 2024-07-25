@@ -1,25 +1,30 @@
 import React, { useState } from "react";
-import { BiSolidDownArrow } from "react-icons/bi";
 import moment from 'moment';
-// import DatePicker from "react-date-picker";
 import { DatePicker } from 'antd'
+import { updateUserData,updateSubscriptionDetails } from "../Reducers/userReducer";
+import { useDispatch } from "react-redux";
+import { toast } from "react-hot-toast";
 function StatusPopup({setShowOverlay, setStatusPopup, info}) {
+  const userId = localStorage.getItem("userId");
+  const dispatch = useDispatch();
+  const ID =  info._id
   const [form, setForm] = useState({
     date: null,
     package: 'Professional',
     amount: '',
     duration:  'Monthly',
+    notify_me: true,
+    total_amount: ''
   })
   // const [dateValue, setDateValue] = useState()
   const handleInputChange = (e) => {
-   const name = e.target.name
-    const value = e.target.value
-    // const { name, value } = e.target;
+    const { name, type, checked, value } = e.target;
     setForm((prevData) => ({
-        ...prevData,
-        [name]: value,
+      ...prevData,
+      [name]: type === 'checkbox' ? checked : value,
     }));
-};
+  };
+
 const handleDateChange = (date, dateString) => {
   setForm((prevData) => ({
     ...prevData,
@@ -29,27 +34,17 @@ const handleDateChange = (date, dateString) => {
 
 const handleSubmit = async(e) => {
   e.preventDefault()
-  const applicationID = info?.obj_id?._id ? info?.obj_id?._id : info?._id;
-  const authToken = localStorage.getItem('access_token')
-  const api = `https://appsala-backend.netlify.app/.netlify/functions/index/updatePricingInfoInUserSchema/${applicationID}`
-  const requestOptions = {
-    method: 'PUT',
-    headers: {
-      "Authorization": `Bearer ${authToken}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(form),
-  };
-  console.log(requestOptions)
+  const body={
+    Id:ID,
+    form:form
+  }
   try {
-    const response = await fetch(api, requestOptions);
-    const data = await response.json();
-    // setSelectedRatings(currentRatings)
-    console.log('Response data:', data);
-    // Handle the response data here
+    console.log(form)
+    await dispatch(updateSubscriptionDetails(body)).unwrap()
+    toast.success('Subscription Updated')
+    await dispatch(updateUserData(userId)).unwrap()  
   } catch (error) {
-    console.error('Error:', error);
-    // Handle errors here
+    toast.error('Error:', error);
   }
 
 }
@@ -59,67 +54,86 @@ const handleSubmit = async(e) => {
   }
   // const [dateValue, onDateChange] = useState(new Date());
   return (
-    <div className="status-popup">
-    <div className="status-heading">
-    <h3>Subscription Details</h3>  
-    <p>Fill up the Details of the App/Service you are using.</p>
-    </div>
-    <div class="line"></div>
+    <div className="subscription-component overlay-card">
+     <h2>Subscription Details 💰</h2>
+  <p>Fill up the Details of the App/Service you are using.</p>
+    <div className="line"></div>
+
     <form action="" className="subscription-form" onSubmit={handleSubmit} >
-        <div  className="subscription-form-child">
+      <div className="flex">
+        <div  className="flex" style={{marginRight:'10px'}}>
         <label htmlFor="">Start Date</label>
         <div className="date-picker-container">
           <DatePicker   onChange={handleDateChange} // Handle date change and format it as needed
               value={form.date ? moment(form.date, 'DD-MM-YYYY') : null} // Convert form.date to moment object
               format="DD-MM-YYYY"  />
           <div className="arrow-down-container">
-        <BiSolidDownArrow className="arrow-down" style={{color: '#F11A7B'}}/>
+        {/* <BiSolidDownArrow className="arrow-down" style={{color: '#F11A7B'}}/> */}
         </div>
         </div>
         </div>
-        <div className="subscription-form-child">
-        <label htmlFor="">Package</label>
+
         <div className="select-container">
-        <select class="custom-select" value={form.package}
-        name="package"
-        onChange={handleInputChange}>
-          <option value="Professional">Professional</option>
-          <option value="Free">Free</option>
+          <label htmlFor="">Duration</label>
+        <select className="custom-select" value={form.duration} name='duration' onChange={handleInputChange}>
+          <option value="Monthly">Monthly</option>
+          <option value="Yearly">Yearly</option>
         </select>
         <div className="arrow-down-container">
-        <BiSolidDownArrow className="arrow-down" style={{color: '#F11A7B'}}/>
+        {/* <BiSolidDownArrow className="arrow-down" style={{color: '#F11A7B'}}/> */}
         </div>
+        </div>    
         </div>
-        </div>
-        <div className="subscription-form-child">
+
+   
+        <div className="flex">
         <div>
-        <label htmlFor="">Price 💵</label>
+        <label htmlFor="">Price $</label>
         <input type="text"  placeholder="12" className="price" 
         value={form.amount}
         name="amount"
         onChange={handleInputChange}/>
         </div>
        
+        <div className="flex" style={{marginLeft:"-15px"}}>
+        <label htmlFor="">Package</label>
         <div className="select-container">
-        <select class="custom-select" value={form.duration} name='duration' onChange={handleInputChange}>
-          <option value="Monthly">Monthly</option>
-          <option value="Yearly">Yearly</option>
+        <select className="custom-select" value={form.package}
+        name="package"
+        onChange={handleInputChange}>
+          <option value="Professional">Professional</option>
+          <option value="Free">Free</option>
         </select>
         <div className="arrow-down-container">
-        <BiSolidDownArrow className="arrow-down" style={{color: '#F11A7B'}}/>
         </div>
         </div>
-        <div className="checkbox-container">
+        </div>
+        </div>
+
+        <div className="flex">
+        <div>
+        <label htmlFor="">Total Paid $</label>
+        <input type="text"  placeholder="12" className="price" 
+        value={form.total_amount}
+        name="total_amount"
+        onChange={handleInputChange}/>
+        </div>
+        <div className="dashboard-card-check-box flex">
         <label htmlFor="" className="notify">Notify me</label>
-        <input type="checkbox"  className="checkbox"/>
+        <input type="checkbox" 
+        id="notify_me" 
+        name="notify_me" 
+        className="checkbox" 
+        checked={form.notify_me} 
+        onChange={handleInputChange} />
         </div>
         </div>
     </form>
 
-    <div className="rating-buttons status-bottons">
-    <button className="button"  onClick={handleClick}>Cancel</button>
-    <button className="button-light" onClick={handleSubmit} >Submit</button>
-    </div>
+    <div className="button-div" style={{alignSelf: "center"}}>
+    <button className="btn btn-light" style={{marginRight:'10px'}}>Cancel</button>
+    <button className="btn btn-dark" onClick={handleSubmit}>Submit</button>
+</div>
     </div>
   )
 }

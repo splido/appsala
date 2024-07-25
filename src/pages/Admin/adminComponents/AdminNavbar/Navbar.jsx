@@ -35,27 +35,27 @@ const logoutHandler = async () =>{
 }
     return (
         <nav>
-            <div className="navbar container admin-nav">
+            <div className="nav-container admin-nav">
                 <div>
 
                 <div className="logo">
             <Link to={"/"} >
-                <img src={logo} alt=""/>
+                <img src={logo} alt="logo"/>
                 </Link>
             </div>
                 </div>
-                <div>
+                <div className='nav-items'>
                     <div className="nav-buttons">
-                    <Link to="/admin/create-category"><button className="button-light" disabled={!isAdmin}>Create Category</button></Link>
-                    <Link to="/admin/create-application"><button className="button-light" disabled={!isAdmin}>Create New Application</button></Link>
+                    <Link to="/admin/create-category"><button className="btn-dark btn" disabled={!isAdmin}>Create Category</button></Link>
+                    <Link to="/admin/create-application"><button className="btn-dark btn" disabled={!isAdmin}>Create New Application</button></Link>
                     </div>
-                    <div className="search">
+                    <form className="search">
                         <input type="text" placeholder="Search Application"  onChange={handleSearchInput} disabled={!isAdmin} />
 
-                    </div>
+                    </form>
                     {
                         isAdmin ?  <div className='admin-dropdown'  >
-                        <button className="button" onMouseEnter={handleMouseEnter}>Admin</button>
+                        <button className="btn btn-light" onMouseEnter={handleMouseEnter}>Admin</button>
                           <ul  className='admin-dropdown-menu' onMouseLeave={handleMouseLeave}>
                               
                               <li><Link to='/admin/profile' style={{textDecoration:'none', color: 'black'}}>Profile</Link></li>

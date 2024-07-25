@@ -982,8 +982,8 @@ input[type='checkbox']::before{
     color: #00A82D;
     transform: scale(0);
     transition: 0.3s all ease-in-out;
-    top: -3px;
-    left: 2px;
+    top: 10px;
+    left: 1px;
     z-index: 1;
 }
 

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import ProductItem from "./ProductItem"
 import Spinner from './Spinner'
-function Products({products}) {
+function Products({products,isMobile}) {
   const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -17,7 +17,7 @@ function Products({products}) {
         loading ? <Spinner/> :
         products && typeof(products) != 'string' ? (
           products.map((product)=>(
-                <ProductItem key={product._id} product = {product}/>
+                <ProductItem key={product._id} product = {product} isMobile={isMobile}/>
             ))
         ): <>
         <p>No Item</p>

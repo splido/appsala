@@ -1,7 +1,4 @@
-
-import { LuLayoutDashboard } from 'react-icons/lu'
-import { RiLogoutBoxRLine } from 'react-icons/ri'
-import { HiOutlineUserCircle } from 'react-icons/hi'
+import Sidebar from '../components/Sidebar'
 import { BsBookmark } from 'react-icons/bs'
 
 import logo from '../assets/img/logo.png'
@@ -16,14 +13,17 @@ import { logoutUser } from '../Reducers/AuthReducer';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigate } from 'react-router-dom';
-import { selectProducts } from '../Reducers/ProductReducer'
+import { selectProducts,fetchProducts } from '../Reducers/ProductReducer'
+
+import SubscriptionPage from '../components/SubscriptionPage'
+
+// import { isMobile,isBrowser } from 'react-device-detect';
 
 function Profile() {
   const products = useSelector(selectProducts);
    const currentUser = useSelector((state) => state.user);
 
 const [followingProducts, setFollowingProducts] = useState([])
-  // const followingApps = currentUser?.products?.data?.following_app
   const [userApps, setUserApps] = useState(followingProducts)
 
   const id = localStorage.getItem('userId')
@@ -31,21 +31,45 @@ const [followingProducts, setFollowingProducts] = useState([])
   const navigate = useNavigate()
   const [savedProducts, setSavedProducts] = useState([])
   const [savedApp, setSavedApp] = useState(false)
+  const [isMobile, setIsMobile] = useState(window.matchMedia('(max-width: 768px)').matches);
   
   useEffect(() => {
-    if (currentUser?.products?.data?.following_app && products?.data) {
+    if (!products) {
+      dispatch(fetchProducts());
+    }
+    
+    if (currentUser?.products?.data?.following_app && products) {
       const followingProductIds = currentUser.products.data.following_app.map(item => item._id);
-      setFollowingProducts(products.data.filter(product => followingProductIds.includes(product._id)))
+      setFollowingProducts(products.filter(product => followingProductIds.includes(product._id)))
       const savedProductIds = currentUser.products.data.saved.map(item => item._id);
-      const filteredProducts = products.data.filter(product => savedProductIds.includes(product._id));
+      const filteredProducts = products.filter(product => savedProductIds.includes(product._id));
       setSavedProducts(filteredProducts);
     }
-  }, [currentUser, products]);
+
+    const handleResize = () => {
+      setIsMobile(window.matchMedia('(max-width: 475px)').matches);
+    };
+
+    window.addEventListener('resize', handleResize);
+    handleResize(); // Check initially
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [currentUser, products,dispatch]);
+
 
   useEffect(() => {
     // Update userApps based on savedApp state
     setUserApps(savedApp ? savedProducts : followingProducts);
-  }, [savedApp, followingProducts, savedProducts]);
+
+    if(isMobile){
+      console.log('mob-version')
+    }else{
+      console.log('web-version')
+    }
+  
+  }, [savedApp, followingProducts, savedProducts,isMobile, userApps]);
 
   const [sortFilter, setSortFilter] = useState(false);
   
@@ -71,13 +95,15 @@ const [followingProducts, setFollowingProducts] = useState([])
   const handleSortClick = () => {
     showSortList(!sortList);
     setShowOverlay(true);
+    document.body.style.overflow = 'hidden'
   }
   const handleOverlayDoubleClick = () => {
     setShowOverlay(false);
+    document.body.style.overflow = ''
   };
-  const handleSidebarClick = (component) => {
-    setActiveComponent(component);
-  };
+  // const handleSidebarClick = (component) => {
+  //   setActiveComponent(component);
+  // };
   const calculateAverageRating = (appData) => {
     
     const  rating  = appData || {
@@ -273,76 +299,56 @@ const onHandleChange =(e)=>{
  }
 
   return (
-    <div className="profile">
-      <div className="sidebar">
-        <Link to={"/"}>
-        <img src={logo} style={{ height:'50px'}}
-        alt="" />
-        </Link>
-        <div   className={`icon ${activeComponent === 'dashboard' ? 'filter-selected' : ''}`}>
 
-        <LuLayoutDashboard
-        onClick={() => handleSidebarClick('dashboard')} /> <p>Dashboard</p>
-        </div>
-        <div  className={`icon ${activeComponent === 'profilepage' ? 'filter-selected' : ''}`}>
-
-        <HiOutlineUserCircle
-        onClick={() => handleSidebarClick('profilepage')} /> <p>Profile</p>
-        </div>
-        <div  className={`icon ${activeComponent === 'settings' ? 'filter-selected' : ''}`}>
-        <RiLogoutBoxRLine  
-        onClick={() => handleLogout()} />
-        <p>Logout</p>
-        </div>
-      
-      </div>
+    <>
+    <Sidebar activeComponent={activeComponent} setActiveComponent={setActiveComponent} handleLogout={handleLogout}/>
+    
+ 
+     
 {
  activeComponent === 'dashboard' && 
- <div className="main">
-        <div className="top">
-          <p>My Applications</p>
-          <div className="search">
-            <form>
-              <input
-              onChange={onHandleChange} 
-              value={searchVal} 
-                type="text"
-                id="search"
-                placeholder="Search"
-                autoComplete="off"
-              />
-            </form>
-            <div className="seach-icon">
-              <img src={searchIcon} alt="" />
-            </div>
-          </div>
-        </div>
+ <div className="dashboard-main">
+        <h2>My Applications</h2>
 
         <div className="filters">
-          <div className={`filter ${selectedFilter === 'All' ? 'selectedFilter' : ''}`}
+          
+          <div className={`filter-item ${selectedFilter === 'All' ? 'selected-filter' : ''}`}
             onClick={() => handleFilterClick('All')}
           >All</div>
-          <div className={`filter ${selectedFilter === 'Status' ? 'selectedFilter' : ''}`}
-            onClick={() => handleFilterClick('Status')}>
-        <select id="dropdown" onChange={handleDropdownChange} value={selectedDropdownValue} >
+  
+        <select id="dropdown" onChange={handleDropdownChange} value={selectedDropdownValue} 
+         className={`filter-item reaction-selector ${selectedFilter === 'Status' ? 'selected-filter' : ''}`}
+         onClick={() => handleFilterClick('Status')}>
         <option value="option1">I am using it</option>
         <option value="option2">Yes, I want to </option>
          <option value="option3">Maybe</option>
          <option value="option4">No, I don't </option>
         </select>
-          </div>
+       
           <div
-          className={`filter ${selectedFilter === 'Ratings' ? 'selectedFilter' : ''}`}
+          className={`filter-item ${selectedFilter === 'Ratings' ? 'selected-filter' : ''}`}
           onClick={() => handleFilterClick('Ratings')}>⭐ My ratings</div>
-          <div className={`filter ${selectedFilter === 'Comments' ? 'selectedFilter' : ''}`}
+          <div className={`filter-item ${selectedFilter === 'Comments' ? 'selected-filter' : ''}`}
             onClick={() => handleFilterClick('Comments')}>💬 My comments</div>
-          <div className={`filter ${selectedFilter === 'Saved' ? 'selectedFilter' : ''}`}
-            onClick={() => handleFilterClick('Saved')}> <BsBookmark/> Saved</div>
+          <div className={`filter-item ${selectedFilter === 'Saved' ? 'selected-filter' : ''}`}
+            onClick={() => handleFilterClick('Saved')}> <BsBookmark/></div>
         </div>
+        <div className='sort-select'>
 
-        <div className="sort" onClick={ handleSortClick}>
+        <div className="flex sort-by" onClick={ handleSortClick}>
           <img src={sort} alt="" />
           <p>{sortText}</p>
+         
+        </div>
+
+        <select id="dropdown" onChange={handleDropdownChange} value={selectedDropdownValue} 
+         className={` desktop-none filter-item reaction-selector ${selectedFilter === 'Status' ? 'selected-filter' : ''}`}
+         onClick={() => handleFilterClick('Status')}>
+        <option value="option1">I am using it</option>
+        <option value="option2">Yes, I want to </option>
+         <option value="option3">Maybe</option>
+         <option value="option4">No, I don't </option>
+        </select>
         </div>
         {
           sortList && showOverlay &&
@@ -360,15 +366,16 @@ const onHandleChange =(e)=>{
         }
     
 {
-   <ProfileProductsList userApps={userApps} id={id} savedApp={savedApp}/>
+   <ProfileProductsList userApps={userApps} id={id} savedApp={savedApp} isMobile={isMobile}/>
 }
        
       </div>
 }
 
   {activeComponent === 'profilepage' && <ProfilePage/>}  
+  {activeComponent === 'subscriptions' && <SubscriptionPage/>}  
       
-    </div>
+    </>
   );
 }
 

@@ -52,7 +52,7 @@ const AdminLogin = () => {
             <div className='admin-login-form'>
             <div>
                 <h2>Admin Login</h2>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} className= 'login-register-form'>
                     <div className="mb-4">
                         <label htmlFor="email">
                             Email
@@ -85,7 +85,7 @@ const AdminLogin = () => {
                     </div>
            {loading ?   <Spinner/> :(<button
                         type="submit"
-                        className='button'>
+                        className='btn btn-light'>
                         Log In
                     </button>)}
                 </form>

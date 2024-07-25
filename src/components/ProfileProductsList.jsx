@@ -3,10 +3,10 @@ import ProfileProductItem from './ProfileProductItem';
 import { useSelector } from 'react-redux';
 import Spinner from './Spinner';
 
-function ProfileProductsList({ userApps, id, savedApp }) {
-  const loading = useSelector((state) => state.user.loading);
+function ProfileProductsList({ userApps, id, savedApp, isMobile }) {
+  // const loading = useSelector((state) => state.user.loading);
   const [showSpinner, setShowSpinner] = useState(true);
-// console.log(userApps)
+  const loading = useSelector((state) => state.products.loading)
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowSpinner(false);
@@ -15,20 +15,21 @@ function ProfileProductsList({ userApps, id, savedApp }) {
     return () => {
       clearTimeout(timer);
     };
+    
   }, []);
 
   if (loading || showSpinner) {
     return <Spinner />;
   }
 
-  if (!userApps || userApps.length === 0) {
+  if (!loading && !userApps || userApps.length === 0) {
     return <h3>No items</h3>;
   }
 
   return (
     <>
       {userApps.map((info) => (
-        <ProfileProductItem info={info} id={info._id} key={info._id} savedApp={savedApp}/>
+        <ProfileProductItem info={info} id={info._id} key={info._id} savedApp={savedApp} isMobile={isMobile}/>
       ))}
     </>
   );

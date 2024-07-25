@@ -7,15 +7,17 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '../Reducers/AuthReducer';
 import { useEffect } from 'react';
+import { RiCloseCircleFill } from "react-icons/ri";
+import toast from 'react-hot-toast';
+import Spinner from './Spinner';
 
 function LoginPopup({setLoginPopupOpen}) {
   const [credentials, setCredentials] = useState({
     email: '',
     password: '',});
 const dispatch = useDispatch();
-// const loading = useSelector((state) => state.auth.loading);
+const loading = useSelector((state) => state.auth.loading);
 const error = useSelector((state) => state.auth.error);
-// const user = useSelector((state) => state.auth.token);
 const userId = useSelector((state) => state.auth.user);
 const navigate = useNavigate()
 
@@ -28,18 +30,15 @@ const handleInputChange = (e) => {
     }));
 };
 
-const handleSubmit = (e) => {
+const handleSubmit = async(e) => {
     e.preventDefault();
-
-
     let { email, password } = credentials
-    dispatch(loginUser({ email, password }));
-    if(error){
-      alert('Wrong Email or Password')
+    try{
+      await dispatch(loginUser({ email, password })).unwrap()
+      setLoginPopupOpen(false)
+    }catch(error){
+      toast.error(error)
     }
-    // if (userId) {
-    //           navigate(`/profile/${userId}`);
-    //         }
     };
 
     useEffect(() => {
@@ -47,28 +46,30 @@ const handleSubmit = (e) => {
         navigate(`/`);
         setLoginPopupOpen(false)
       }
-      if (error) {
-        alert('Wrong Email or Password');
-      }
     }, [userId, navigate,error,setLoginPopupOpen]);
 
+    const handleClose = () =>{
+      setLoginPopupOpen(false)
+    }
+
   return (
-    <div className="login-pop">
-      <div className='login-logo'>
-      <img src={NewLogo} alt="" className='login-logo-img'/>
-        <p><span>Login</span> with</p>
+    <div className="login-component overlay-card">
+      <div className="close-overlay" onClick={handleClose}>
+      <RiCloseCircleFill size='20px' color='#F11A7B'/> 
       </div>
-        <div className="socials">
-            <img src={facebook} alt="" />
-            <img src={google} alt="" />
-            <img src={twitter} alt="" />
-        </div>
+      <div className="login-component-top">
+    <img  src={NewLogo} alt="appsala"/>
+    <p><span style={{color: '#F11A7B'}}>Login</span> and Start using the crazy features on Appsala!</p>
+  </div>
+  
+        <div className="line"></div>
          
-        <form onSubmit={handleSubmit} className= 'login-form'>
+        <form onSubmit={handleSubmit} className= 'login-register-form'>
                     <div>
                         <label style={{marginRight: '10px'}}>Email</label>
                         <input
-                         style={{marginLeft: '30px'}}
+                        
+                          className='ml-30'
                             type="email"
                             name="email"
                             value={credentials.email}
@@ -86,9 +87,23 @@ const handleSubmit = (e) => {
                             required
                         />
                     </div>
-                 <Link to={"/forgetpassword"} className='forget-pass'>Forget Password?</Link>
-                    <button type="submit" className='button-light'>Login</button>
-                </form>
+               
+                
+                <Link to={"/forgetpassword"} className='forget-pass'>Forget Password?</Link>
+                <div className="button-div" style={{alignSelf: "center"}}>
+         <button className="btn btn-dark">
+          {
+            loading ? <div style={{height:'10px'}}><Spinner type='spinner-reverse'/></div>  : 'Login'
+          }
+         </button>
+       
+</div>
+<div className="flex social">
+    <img src={facebook} alt="" />
+            <img src={google} alt="" />
+            <img src={twitter} alt="" />
+    </div>
+ </form>
     </div>
   )
 }
