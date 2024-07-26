@@ -14,7 +14,6 @@ function SeachList({filteredData}) {
                       
                       }
                       </div>
-    
     )
   }
   
