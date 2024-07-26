@@ -4,7 +4,7 @@ import { MdOutlineInsertComment } from "react-icons/md";
 import { BsBookmark } from "react-icons/bs";
 import { useState, useEffect } from "react";
 import StarRating from "./StarRating";
-import {MdOutlineCategory,MdOutlineExpandMore,MdOutlineExpandLess} from 'react-icons/md'
+import {MdOutlineExpandMore,MdOutlineExpandLess} from 'react-icons/md'
 import { selectUser } from "../Reducers/userReducer";
 import { useSelector,useDispatch } from "react-redux";
 import { updateUserData,updateUserProductStatus,postComment,deleteComment,updateUserRatings } from "../Reducers/userReducer";
@@ -14,7 +14,6 @@ import ReactionComponent from "./ReactionComponent";
 import CommentPopup from "./CommentPopup";
 import RatingPopup from "./RatingPopup";
 import HurryUp from "./HurryUp";
-import userImg from '../assets/img/user.png';
 import { toast } from "react-hot-toast";
 import SubscriptionComponent from "./ProductCardComponents/SubscriptionComponent";
 import CommentComponent from "./ProductCardComponents/CommentComponent";
@@ -167,7 +166,6 @@ function ProductItem({ product,isMobile }) {
       setIsSaved(false);
       setAppRating([]);
       setAppCommentList([]);
-      //  setAppInfo()
       setCurrentStatus("");
     }
   }, [user?.products?.data?.following_app, user?.products?.data?.saved]);

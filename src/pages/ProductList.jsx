@@ -23,7 +23,7 @@ function ProductList() {
         const response = await fetch(apiCategoryUrl);
         const data = await response.json();
         setCategory(data);
-        setLoading(false); // Set loading to false after data is fetched
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
@@ -89,8 +89,12 @@ function ProductList() {
       </div>
 
       <div className="container">
-        {loading ? ( // Conditionally render loading message while data is being fetched
+        {
+      loading
+         ? ( // Conditionally render loading message while data is being fetched
+         <div style={{height:'200px', width:'200px'}}>
           <Spinner />
+          </div>
         ) : (
           <>
             <div className="question-answer">

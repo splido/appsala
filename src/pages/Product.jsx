@@ -12,11 +12,8 @@ import CommentPopup from '../components/CommentPopup'
 import RatingPopup from '../components/RatingPopup'
 import ReactionComponent from '../components/ReactionComponent'
 import { selectUser } from '../Reducers/userReducer'
-import { Link } from 'react-router-dom'
 import HurryUp from '../components/HurryUp'
 import RegisterPopup from '../components/RegisterPopup'
-import userImg from '../assets/img/user.png'
-import { updateUserData,updateUserProductStatus,postComment,deleteComment,updateUserRatings } from "../Reducers/userReducer";
 import {  fetchProducts, selectProducts } from '../Reducers/ProductReducer'
 import { toast } from "react-hot-toast";
 import RatingComponent from "../components/ProductCardComponents/RatingComponent";
@@ -29,11 +26,9 @@ function Product() {
     const loading = useSelector((state) => state.products.loading);
     const error = useSelector((state) => state.products.error);
     const dispatch = useDispatch();
-    const id = localStorage.getItem('userId')
     const [singleProduct, setSingleProduct] = useState([])
     var input_string = slug
     var output_string = input_string.replace(/-/g, " ")
-    // const [loading, setLoading] = useState(true);
     const [showOverlay, setShowOverlay] = useState(false);
     const auth = useSelector((state) => state.auth)
     const [similar, setSimilar] = useState([])
@@ -52,15 +47,6 @@ function Product() {
     const [isMobile, setIsMobile] = useState(window.matchMedia('(max-width: 768px)').matches);
     const [showComments, setShowComments] = useState(false)  
     const [showRatings, setShowRatings] = useState(false)  
-    const [comment, setComment] = useState("");
-    const [selectedRatings, setSelectedRatings] = useState({
-      Usability: 0,
-      Performance: 0,
-      Features: 0,
-      Company: 0,
-      Value: 0,
-      Support: 0,
-    });
   
     useEffect(() => {
       if (!products) {
@@ -118,14 +104,6 @@ useEffect(() => {
   }else{
     console.log('web-version')
   }
-  setSelectedRatings({
-    Usability: appRating?.Usability || 0,
-    Performance: appRating?.Performance || 0,
-    Features: appRating?.Features || 0,
-    Company: appRating?.Company || 0,
-    Value: appRating?.Value || 0,
-    Support: appRating?.Support || 0,
-  });
 }, [singleProduct, user,isMobile]);
 
     
@@ -206,7 +184,6 @@ useEffect(() => {
     }else{
        average = 0
     }
-    // console.log(singleProduct[0])
 
     const website = `http://${singleProduct[0]?.sellerDetails?.companyWebsite}`
 
@@ -218,60 +195,7 @@ useEffect(() => {
       return <div>Error: {error}</div>;
     }
 
-    
 
-    const DeleteComment = async (id) => {
-      try {
-        await dispatch(deleteComment(id)).unwrap()
-        const updatedComments = appCommentList.filter(comment => comment._id !== id);
-        setAppCommentList(updatedComments);
-        await  dispatch(updateUserData(id)).unwrap()  
-      } catch (error) {
-        console.error('Error deleting comment:', error);
-      }
-    }
-
-    const handlePostComment =async(e)=>{
-      e.preventDefault();
-      const body ={
-        Id: singleProduct[0]?._id,
-        comment: comment
-      }
-      try {
-        await dispatch(postComment(body)).unwrap()
-        const newComment = {comment, createdAt: new Date().toISOString() };
-        setAppCommentList((prevComments) => [ ...prevComments,newComment]);
-        await  dispatch(updateUserData(id)).unwrap()       
-        setComment("");
-      } catch (error) {
-        console.error("Error:", error);
-      }
-    }
-
-    
-  const handleUpdateRatings = async(e) =>{
-    e.preventDefault();
-    const body={
-      Id: singleProduct[0]?._id,
-      ratings: selectedRatings
-    }
-    try {
-      await dispatch(updateUserRatings(body)).unwrap()
-      toast.success('Rating Updated')
-      await  dispatch(updateUserData(id)).unwrap()    
-  
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  }
-
-  function handleStarClick(aspect, value) {
-    // console.log(aspect, value);
-    setSelectedRatings(prevRatings => ({
-      ...prevRatings,
-      [aspect]: value,
-    }));
-  }
 
     if(!singleProduct[0]){
       return <h2>Product not found</h2>
@@ -450,14 +374,9 @@ similar ? (
       <h2>In-Dept Analysis</h2>
   
       <p>
-        Constant Contact , an innovative browser extension designed to streamline and optimize YouTube content creation, has garnered immense popularity among content creators and marketers. 
-        With its array of time-saving features and data-driven functionalities, TubeBuddy has become an indispensable tool in the YouTube landscape. In this comprehensive review, we will explore the various aspects of TubeBuddy, 
-        including its Video SEO capabilities, in-depth analytics, time-saving bulk processing, competitor analysis, engagement tools, A/B testing, and customer support. By examining these features and their impact on content creation, 
-        we aim to shed light on how TubeBuddy has revolutionized YouTube channel management and success. Video SEO Made Simple: TubeBuddy's greatest strength lies in its Video SEO tools, which have transformed the way content creators optimize their videos for search and discovery. 
-        Upon installing the extension, users are greeted with a powerful keyword research feature that enables them to identify high-traffic and relevant keywords for their content. The intuitive keyword analysis also presents insights into the competitiveness of these keywords, allowing creators to choose the most strategic
-         terms for their target audience. Moreover, TubeBuddy empowers users to optimize their video titles, tags, and descriptions directly within the YouTube upload interface. The real-time suggestions and tag explorer functionality make the process efficient and effective, ensuring that videos are easily discoverable by the intended audience.
-        Additionally, the extension provides an invaluable tool to track and manage video rankings,
-         offering content creators greater visibility into their videos' performance on YouTube's search engine.
+      {
+  singleProduct[0]?.longDescription
+}
       </p>
   
       <h2 style={{color: "#00A82D"}}>Positive</h2>

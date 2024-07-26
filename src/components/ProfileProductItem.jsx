@@ -72,6 +72,7 @@ function ProfileProductItem({ info, savedApp, isMobile }) {
   const handleOverlayDoubleClick = () => {
     setShowOverlay(false);
   };
+
   if (info?.subscription?.date) {
     var inputDate = new Date(info.subscription.date);
     var formattedDate = inputDate.toLocaleDateString("en-GB", {
@@ -91,7 +92,6 @@ function ProfileProductItem({ info, savedApp, isMobile }) {
   } else {
     comments = 0;
   }
-
   if (followingApp) {
     var rating = followingApp?.subscription?.user_ratings[0]?.rating;
     if (rating) {
@@ -121,27 +121,16 @@ function ProfileProductItem({ info, savedApp, isMobile }) {
     average = 0;
   }
 
-  if (info?.obj_id?.logo) {
-    var logo = info.obj_id.logo;
-  } else {
-    logo = info.logo;
+  if (info?.logo) {
+    var logo = info.logo;
   }
 
-  if (info?.obj_id?.name) {
-    var name = info.obj_id.name;
-  } else {
-    name = info.name;
+  if (info?.name) {
+    var name = info.name;
   }
-  if (info?.obj_id?.shortDescription) {
-    var shortDescription = info.obj_id.shortDescription;
+  if (info?.shortDescription) {
+    var shortDescription  = info.shortDescription;
     const words = shortDescription.split(/\s+/);
-    // Get the first 20 words
-    const first20Words = words.slice(0, 20).join(" ");
-    shortDescription = first20Words + "...";
-  } else {
-    shortDescription = info.shortDescription;
-    const words = shortDescription.split(/\s+/);
-    // Get the first 20 words
     const first20Words = words.slice(0, 20).join(" ");
     shortDescription = first20Words + "...";
   }
@@ -155,15 +144,8 @@ function ProfileProductItem({ info, savedApp, isMobile }) {
     subscriptionDuration = "";
   }
 
-  if (info?.obj_id?.Category) {
-    var category = info.obj_id.Category;
-    const convertedText = category
-      .split("-")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-    category = convertedText;
-  } else {
-    category = info.Category;
+  if (info?.Category) {
+    var category = info.Category;
     const convertedText = category
       ?.split("-")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
@@ -236,11 +218,7 @@ function ProfileProductItem({ info, savedApp, isMobile }) {
               </Link>
             </p>
             <div className="stars flex">
-              <FaStar style={{ color: "#F11A7B" }} />
-              <FaStar style={{ color: "#F11A7B" }} />
-              <FaStar style={{ color: "#F11A7B" }} />
-              <FaStar style={{ color: "#F11A7B" }} />
-              <FaStar style={{ color: " #D9D9D9" }} />
+              <StarRating rating={info.averageRating} isDisabled={true}/>
             </div>
           </div>
           {!cardOpen && (
@@ -273,11 +251,7 @@ function ProfileProductItem({ info, savedApp, isMobile }) {
           <div className="flex mobile-none">
             <p className="card-heading ">{name}</p>
             <div className="stars flex">
-              <FaStar style={{ color: "#F11A7B" }} />
-              <FaStar style={{ color: "#F11A7B" }} />
-              <FaStar style={{ color: "#F11A7B" }} />
-              <FaStar style={{ color: "#F11A7B" }} />
-              <FaStar style={{ color: " #D9D9D9" }} />
+            <StarRating rating={info.averageRating} isDisabled={true}/>
             </div>
           </div>
           <p className="description">{shortDescription}</p>

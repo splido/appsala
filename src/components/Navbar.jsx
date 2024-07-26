@@ -79,6 +79,7 @@ function Navbar({ products }) {
     setDataFilter("");
   };
   const onHandleChange = (e) => {
+    e.preventDefault()
     setSearchVal(e.target.value);
     setSearching(true);
     filterData();
@@ -88,7 +89,7 @@ function Navbar({ products }) {
   };
 
   const filterData = () => {
-    const filteredData = products?.data?.filter((item) =>
+    const filteredData = products?.filter((item) =>
       item.name.toLowerCase().includes(searchVal.toLowerCase())
     );
     setDataFilter(filteredData);
