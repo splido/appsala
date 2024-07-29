@@ -91,10 +91,8 @@ function ProductList() {
       <div className="container">
         {
       loading
-         ? ( // Conditionally render loading message while data is being fetched
-         <div style={{height:'200px', width:'200px'}}>
+         ? (
           <Spinner />
-          </div>
         ) : (
           <>
             <div className="question-answer">

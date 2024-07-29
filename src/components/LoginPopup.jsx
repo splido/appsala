@@ -91,11 +91,12 @@ const handleSubmit = async(e) => {
                 
                 <Link to={"/forgetpassword"} className='forget-pass'>Forget Password?</Link>
                 <div className="button-div" style={{alignSelf: "center"}}>
-         <button className="btn btn-dark">
-          {
-            loading ? <div style={{height:'10px'}}><Spinner type='spinner-reverse'/></div>  : 'Login'
-          }
+                {
+        loading ? <Spinner/>  :   <button className="btn btn-dark">
+        Login
          </button>
+        
+      }
        
 </div>
 <div className="flex social">

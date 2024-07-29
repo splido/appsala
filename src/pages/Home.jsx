@@ -17,6 +17,7 @@ import { TiTick } from "react-icons/ti";
 import RegisterPopup from "../components/RegisterPopup";
 import { useState,useEffect } from "react";
 import { useSelector,useDispatch } from "react-redux";
+import { fetchUser } from '../Reducers/userReducer'
 import { fetchBlogs, selectBlogs, BlogsError, BlogsLoading } from '../Reducers/BlogReducer'
 import BlogCard from "../components/BlogCard";
 import Spinner from "../components/Spinner";
@@ -29,6 +30,7 @@ function Home({ products }) {
   const dispatch = useDispatch();
   const [registerPopup, setRegisterPopup] = useState(false);
   const [showOverlay, setShowOverlay] = useState(false);
+  const id = localStorage.getItem('userId')
 
   const handleRegisterPopup = () => {
     if (user) {
@@ -44,12 +46,16 @@ function Home({ products }) {
 
   
   useEffect(()=>{
+    if(id){
+      dispatch(fetchUser(id));
+    }
+    
     try {
       dispatch(fetchBlogs())
     } catch (error) {
       console.log(error);
     }
-        },[] )
+        },[id] )
 
   return (
     <div>

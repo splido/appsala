@@ -127,11 +127,15 @@ const handleSubmit =async(e) => {
         </div>
                 </form>
                 <div className="button-div" style={{alignSelf: 'center', display: "flex"}}>
-    <button className="btn btn-dark" style={{marginRight: "1rem"}} onClick={handleSubmit}>
-      {
-        loading ? <div style={{height:'10px'}}><Spinner type='spinner-reverse'/></div>  : 'Register'
+    
+                {
+        loading ? <Spinner/>  :   <button className="btn btn-dark" style={{marginRight: "1rem"}} onClick={handleSubmit}>
+        Register
+         </button>
+        
       }
-      </button>
+
+  
     <p>Already Registered? <u><Link onClick={handleClick}> Login</Link></u></p>
 </div>
     </div>

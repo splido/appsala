@@ -1,4 +1,3 @@
-import { FaStar } from "react-icons/fa";
 import {
   MdOutlineCategory,
   MdOutlineExpandMore,
@@ -18,7 +17,6 @@ import {
 } from "../Reducers/userReducer";
 import ReactionComponent from "./ReactionComponent";
 import { Link } from "react-router-dom";
-import { toast } from "react-hot-toast";
 import SubscriptionComponent from "./ProductCardComponents/SubscriptionComponent";
 import CommentComponent from "./ProductCardComponents/CommentComponent";
 import RatingComponent from "./ProductCardComponents/RatingComponent";
@@ -260,7 +258,8 @@ function ProfileProductItem({ info, savedApp, isMobile }) {
             <p>
               Marketing
               <FaArrowCircleRight style={{ margin: "0 10px" }} />
-              <u>Email Marketing</u>
+              <Link to={`/category/${info?.Category}`} style={{color:'#757575'}} target='_blank'>
+                  <u>{category}</u></Link>
             </p>
           </div>
           <div className="flex rating-comment">
@@ -270,7 +269,8 @@ function ProfileProductItem({ info, savedApp, isMobile }) {
                 <p>
                   Marketing
                   <FaArrowCircleRight style={{ margin: "0 10px" }} />
-                  <u>Email Marketing</u>
+                  <Link to={`/category/${info?.Category}`} style={{color:'#757575'}} target='_blank'>
+                  <u>{category}</u></Link>
                 </p>
               </div>
             </div>
