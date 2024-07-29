@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useCallback } from "react";
 import { useDispatch,useSelector } from "react-redux";
 import CommentList from "./CommentList";
 import { updateUserData,postComment } from "../Reducers/userReducer";
@@ -31,7 +31,7 @@ function CommentPopup({ info, savedApp }) {
     setComment(e.target.value);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = useCallback( async (e) => {
     e.preventDefault();
     const body ={
       Id: ID,
@@ -39,15 +39,15 @@ function CommentPopup({ info, savedApp }) {
     }
 
     try {
-      await dispatch(postComment(body)).unwrap();
-      const newComment = {comment, createdAt: new Date().toISOString() };
-      setComments((prevComments) => [ ...prevComments,newComment]);
-      await dispatch(updateUserData(userId)).unwrap(); 
-      setComment("");
+        await dispatch(postComment(body)).unwrap();
+        const newComment = {comment, createdAt: new Date().toISOString() };
+        setComments((prevComments) => [ ...prevComments,newComment]);
+        await dispatch(updateUserData(userId)).unwrap(); 
+        setComment(""); 
     } catch (error) {
       console.error("Error:", error);
     }
-  };
+  }, [dispatch, comment, userId]);
 
   return (
     <div className="comment-component overlay-card">
