@@ -26,6 +26,23 @@ const [followingProducts, setFollowingProducts] = useState([])
   const [commentedApps, setCommentedApps]=useState([])
   const [ratedApps, setRatedApps]=useState([])
   
+  const [selectedDropdownValue, setSelectedDropdownValue] = useState('option1');
+  const [filterOptions, setFilterOptions] = useState({
+    option1: [],
+    option2: [],
+    option3: [],
+    option4: []
+  });
+  
+  const statusMapping = {
+    option1: 'I am using it 👍',
+    option2: 'Yes, i want to 🤩',
+    option3: 'Maybe 🤔',
+    option4: "No, I don't 😑"
+  };
+
+  
+
   useEffect(() => {
     if (!products) {
       dispatch(fetchProducts());
@@ -65,6 +82,21 @@ const [followingProducts, setFollowingProducts] = useState([])
     const ratedApps = userApps?.filter(app => filterRatedIds.includes(app._id));
     setRatedApps(ratedApps)
   
+    const updateFilterOptions = () => {
+      const updatedOptions = Object.keys(statusMapping).reduce((acc, key) => {
+        const status = statusMapping[key];
+        const filtered = currentUser?.products?.data?.following_app?.filter((i) => i.status === status);
+        const filteredIds = filtered?.map(app => app._id);
+        const filteredApps = userApps.filter(app => filteredIds.includes(app._id));
+        acc[key] = filteredApps;
+        return acc;
+      }, {});
+
+      setFilterOptions(updatedOptions);
+    };
+
+    updateFilterOptions();
+
   }, [savedApp, followingProducts, savedProducts,setUserApps]);
 
   const [sortFilter, setSortFilter] = useState(false);
@@ -74,7 +106,6 @@ const [followingProducts, setFollowingProducts] = useState([])
   const [sortList, showSortList] = useState(false);
   const [user, setUser] = useState(currentUser.products?.data)
   const [selectedFilter, setSelectedFilter] = useState('All');
-  const [selectedDropdownValue, setSelectedDropdownValue] = useState('option1');
   const [sortText, setSortText] = useState('Sort by');
  
   
@@ -233,21 +264,16 @@ const filterRatings = () =>{
   setSelectedFilter('Ratings')
  }
 
- const statusMapping = {
-  option1: 'I am using it 👍',
-  option2: 'Yes, i want to 🤩',
-  option3: 'Maybe 🤔',
-  option4: "No, I don't 😑"
-};
+//  const statusMapping = {
+//   option1: 'I am using it 👍',
+//   option2: 'Yes, i want to 🤩',
+//   option3: 'Maybe 🤔',
+//   option4: "No, I don't 😑"
+// };
 
 const filterStatus = () => {
-  const status = statusMapping[selectedDropdownValue];
-  if (status) {
-    const filterStatus = currentUser?.products?.data?.following_app?.filter((i) => i.status === status);
-    const filterStatusIds = filterStatus.map(app => app._id);
-    const statusApps = userApps.filter(app => filterStatusIds.includes(app._id));
-    setUserApps(statusApps);
-  }
+  const selectedFilterApps = filterOptions[selectedDropdownValue] || [];
+  setUserApps(selectedFilterApps);
   
   setSelectedFilter('Status');
 };

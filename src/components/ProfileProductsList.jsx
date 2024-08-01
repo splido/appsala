@@ -3,7 +3,7 @@ import ProfileProductItem from './ProfileProductItem';
 import { useSelector } from 'react-redux';
 import Spinner from './Spinner';
 
-function ProfileProductsList({ userApps, id, savedApp, isMobile }) {
+function ProfileProductsList({ userApps, savedApp, isMobile }) {
   // const loading = useSelector((state) => state.user.loading);
   const [showSpinner, setShowSpinner] = useState(true);
   const loading = useSelector((state) => state.products.loading)
