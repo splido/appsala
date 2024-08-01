@@ -15,7 +15,7 @@ function ProfileProductsList({ userApps, id, savedApp, isMobile }) {
     return () => {
       clearTimeout(timer);
     };
-    
+
   }, []);
 
   if (loading || showSpinner) {

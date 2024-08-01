@@ -1,23 +1,14 @@
 import Sidebar from '../components/Sidebar'
 import { BsBookmark } from 'react-icons/bs'
-
-import logo from '../assets/img/logo.png'
 import sort from '../assets/img/sort.svg'
-import searchIcon from '../assets/img/search.svg'
 import ProfileProductsList from '../components/ProfileProductsList'
-import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-
 import ProfilePage from '../components/ProfilePage'
 import { logoutUser } from '../Reducers/AuthReducer';
 import { useDispatch, useSelector } from 'react-redux';
-
 import { useNavigate } from 'react-router-dom';
 import { selectProducts,fetchProducts } from '../Reducers/ProductReducer'
-
 import SubscriptionPage from '../components/SubscriptionPage'
-
-// import { isMobile,isBrowser } from 'react-device-detect';
 
 function Profile() {
   const products = useSelector(selectProducts);
@@ -32,6 +23,8 @@ const [followingProducts, setFollowingProducts] = useState([])
   const [savedProducts, setSavedProducts] = useState([])
   const [savedApp, setSavedApp] = useState(false)
   const [isMobile, setIsMobile] = useState(window.matchMedia('(max-width: 768px)').matches);
+  const [commentedApps, setCommentedApps]=useState([])
+  const [ratedApps, setRatedApps]=useState([])
   
   useEffect(() => {
     if (!products) {
@@ -60,30 +53,29 @@ const [followingProducts, setFollowingProducts] = useState([])
 
 
   useEffect(() => {
-    // Update userApps based on savedApp state
     setUserApps(savedApp ? savedProducts : followingProducts);
 
-    if(isMobile){
-      console.log('mob-version')
-    }else{
-      console.log('web-version')
-    }
+    const filterCommented = currentUser?.products?.data?.following_app?.filter((i) => (i.subscription.comment.length > 0))
+    const filterCommentedIds = filterCommented?.map(app => app._id);
+    const commentedApps = userApps?.filter(app => filterCommentedIds.includes(app._id));
+    setCommentedApps(commentedApps)
+
+    const filterRated = currentUser?.products?.data?.following_app?.filter((i) => (i.subscription?.user_ratings[0]?.rating ))
+    const filterRatedIds = filterRated?.map(app => app._id);
+    const ratedApps = userApps?.filter(app => filterRatedIds.includes(app._id));
+    setRatedApps(ratedApps)
   
-  }, [savedApp, followingProducts, savedProducts,isMobile, userApps]);
+  }, [savedApp, followingProducts, savedProducts,setUserApps]);
 
   const [sortFilter, setSortFilter] = useState(false);
   
   const [activeComponent, setActiveComponent] = useState('dashboard');
-  const sortOrder = 'asc';
-  // const [sortOrder, setSortOrder] = useState('asc');
   const [showOverlay, setShowOverlay] = useState(false);
   const [sortList, showSortList] = useState(false);
   const [user, setUser] = useState(currentUser.products?.data)
-  const [searchVal, setSearchVal] = useState('')
   const [selectedFilter, setSelectedFilter] = useState('All');
   const [selectedDropdownValue, setSelectedDropdownValue] = useState('option1');
   const [sortText, setSortText] = useState('Sort by');
-  // console.log(sortFilter, sortOrder)
  
   
   const handleLogout = () => {
@@ -101,9 +93,6 @@ const [followingProducts, setFollowingProducts] = useState([])
     setShowOverlay(false);
     document.body.style.overflow = ''
   };
-  // const handleSidebarClick = (component) => {
-  //   setActiveComponent(component);
-  // };
   const calculateAverageRating = (appData) => {
     
     const  rating  = appData || {
@@ -114,7 +103,6 @@ const [followingProducts, setFollowingProducts] = useState([])
       Usability:0,
       Value:0
     }
-    // console.log(rating)
     if(rating){
       const totalRatings = Object.values(rating).reduce((sum, value) => sum + value, 0)
       const numberOfRatings = Object.keys(rating).length;
@@ -125,6 +113,7 @@ const [followingProducts, setFollowingProducts] = useState([])
   };
 
   const handleSortToggle = (type) => {
+    document.body.style.overflow = ''
     const filterFollowed = currentUser?.products?.data?.following_app
     setShowOverlay(false)
     if (type === 'latest') {
@@ -136,7 +125,6 @@ const [followingProducts, setFollowingProducts] = useState([])
     })
     const sortedItemsIds = sortedItems.map(app => app._id);
     sortedItems = userApps.filter(app => sortedItemsIds.includes(app._id));
-    console.log(sortedItems)
     setUserApps(sortedItems);
     } else if (type === 'oldest') {
       setSortText('Oldest');
@@ -148,7 +136,6 @@ const [followingProducts, setFollowingProducts] = useState([])
     
     const sortedItemsIds = sortedItems.map(app => app._id);
     sortedItems = userApps.filter(app => sortedItemsIds.includes(app._id));
-    console.log(sortedItems)
     setUserApps(sortedItems);
    
   }
@@ -230,9 +217,6 @@ const handleFilterClick = (filter) => {
 };
 
 const filterComments = () =>{
- const filterCommented = currentUser?.products?.data?.following_app?.filter((i) => (i.subscription.comment.length > 0))
- const filterCommentedIds = filterCommented.map(app => app._id);
- const commentedApps = userApps.filter(app => filterCommentedIds.includes(app._id));
  setUserApps(commentedApps)
  setSelectedFilter('Comments')
 }
@@ -245,58 +229,32 @@ const filterSaved = () =>{
  
 const filterRatings = () =>{
   setSavedApp(false)
-  const filterRated = currentUser?.products?.data?.following_app?.filter((i) => (i.subscription?.user_ratings[0]?.rating ))
-  const filterRatedIds = filterRated.map(app => app._id);
-  const ratedApps = userApps.filter(app => filterRatedIds.includes(app._id));
   setUserApps(ratedApps)
   setSelectedFilter('Ratings')
  }
 
-const filterStatus = () =>{
-  if (selectedDropdownValue === 'option1'){
-    const filterStatus = currentUser?.products?.data?.following_app?.filter((i) => (i.status === 'I am using it 👍'))
-    console.log(filterStatus)
-    const filterStatusIds = filterStatus.map(app => app._id);
-  const statusApps = userApps.filter(app => filterStatusIds.includes(app._id));
-    setUserApps(statusApps)
-  } if (selectedDropdownValue === 'option2'){
-    const filterStatus = currentUser?.products?.data?.following_app?.filter((i) => (i.status === 'Yes, i want to 🤩'))
-    const filterStatusIds = filterStatus.map(app => app._id);
-    const statusApps = userApps.filter(app => filterStatusIds.includes(app._id));
-      setUserApps(statusApps)
-  }
-  if (selectedDropdownValue === 'option3'){
-    const filterStatus = currentUser?.products?.data?.following_app?.filter((i) => (i.status === 'Maybe 🤔'))
-    console.log(filterStatus)
-    const filterStatusIds = filterStatus.map(app => app._id);
-    const statusApps = userApps.filter(app => filterStatusIds.includes(app._id));
-      setUserApps(statusApps)
-  }
-  if (selectedDropdownValue === 'option4'){
-    const filterStatus = currentUser?.products?.data?.following_app?.filter((i) => (i.status === "No, i don't 😑"))
-    console.log(filterStatus)
-    const filterStatusIds = filterStatus.map(app => app._id);
-    const statusApps = userApps.filter(app => filterStatusIds.includes(app._id));
-      setUserApps(statusApps)
-  }
-  
- 
-  setSelectedFilter('Status')
- }
-
-const handleDropdownChange = (event) => {
-  const selectedValue = event.target.value;
-  // setSelectedDropdownValue(selectedValue);
-  // console.log(selectedValue)
-  setSelectedDropdownValue(selectedValue)
+ const statusMapping = {
+  option1: 'I am using it 👍',
+  option2: 'Yes, i want to 🤩',
+  option3: 'Maybe 🤔',
+  option4: "No, I don't 😑"
 };
 
-const onHandleChange =(e)=>{
-  setSearchVal(e.target.value)
-  const filterSearch = user?.following_app?.filter((i) => (i.obj_id.name.toLowerCase().includes(searchVal.toLowerCase()) ))
-  // console.log(filterSearch)
-  setUserApps(filterSearch)
- }
+const filterStatus = () => {
+  const status = statusMapping[selectedDropdownValue];
+  if (status) {
+    const filterStatus = currentUser?.products?.data?.following_app?.filter((i) => i.status === status);
+    const filterStatusIds = filterStatus.map(app => app._id);
+    const statusApps = userApps.filter(app => filterStatusIds.includes(app._id));
+    setUserApps(statusApps);
+  }
+  
+  setSelectedFilter('Status');
+};
+const handleDropdownChange = (event) => {
+  const selectedValue = event.target.value;
+  setSelectedDropdownValue(selectedValue)
+};
 
   return (
 
